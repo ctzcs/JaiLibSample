@@ -4,12 +4,20 @@
 M :: #import "Math";
 using M;
 F :: #import "foster";
+FILE :: #import "File";
+
+#load "../../shared/capture.jai";
 
 quad_mesh: *F.Mesh;
 quad_material: *F.Material;
 quad_texture: *F.Texture;
 offscreen_target: *F.Target;
 quad_command, offscreen_command: F.Draw_Command;
+
+has_arg :: (value: string) -> bool {
+    for arg: get_command_line_arguments() if arg == value return true;
+    return false;
+}
 
 startup :: () {
     quad_mesh = F.mesh_create(F.App.device, F.Batcher_Vertex_Format, .SIXTEEN, "SampleQuad");
@@ -49,7 +57,12 @@ shutdown :: () {
 update :: () {}
 
 render :: () {
+    if has_arg("shot") capture_frame += 1;
     sampler := F.texture_sampler_make(.LINEAR, .CLAMP);
+    // 顶点已在裁剪空间：给 Batcher Shader 的 b0 传单位矩阵（默认材质不会自己设置投影）。
+    identity := M.Matrix4.{};
+    identity._11 = 1; identity._22 = 1; identity._33 = 1; identity._44 = 1;
+    F.material_stage_set_uniform_value(*quad_material.Vertex, 0, identity);
 
     F.graphics_device_clear_color(F.App.device, F.drawable_target_target(offscreen_target),
         F.Color_Transparent);
@@ -59,6 +72,10 @@ render :: () {
     F.graphics_device_clear_color(F.App.device, F.drawable_target_window(F.App.window), F.Color_Black);
     quad_material.Fragment.Samplers[0] = .{ Tex = F.target_texture(offscreen_target), Sampler = sampler };
     F.graphics_device_draw(F.App.device, quad_command);
+    if has_arg("shot") && capture_frame == 8 {
+        capture_window("basic");
+        F.app_exit();
+    }
 }
 
 main :: () {

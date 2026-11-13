@@ -4,6 +4,9 @@
 M :: #import "Math";
 using M;
 F :: #import "foster";
+FILE :: #import "File";
+
+#load "../../shared/capture.jai";
 
 batcher: *F.Batcher;
 
@@ -17,6 +20,11 @@ main :: () {
     F.app_destroy();
 }
 
+has_arg :: (value: string) -> bool {
+    for arg: get_command_line_arguments() if arg == value return true;
+    return false;
+}
+
 startup :: () {
     batcher = F.batcher_create(F.App.device, "BatcherExample");
     print("Batcher ready\n");
@@ -26,6 +34,7 @@ shutdown :: () { F.batcher_destroy(batcher); }
 update :: () {}
 
 render :: () {
+    if has_arg("shot") capture_frame += 1;
     target := F.drawable_target_window(F.App.window);
     F.graphics_device_clear_color(F.App.device, target, .{ 24, 28, 36, 255 });
 
@@ -34,4 +43,8 @@ render :: () {
     F.batcher_circle(batcher, .{ 430, 130 }, 70, 32, .{ 70, 170, 235, 255 });
     F.batcher_line(batcher, .{ 80, 260 }, .{ 560, 300 }, 8, .{ 245, 205, 70, 255 });
     F.batcher_render(batcher, target);
+    if has_arg("shot") && capture_frame == 8 {
+        capture_window("batcher");
+        F.app_exit();
+    }
 }

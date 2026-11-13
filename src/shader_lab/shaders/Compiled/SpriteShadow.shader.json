@@ -1,0 +1,264 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": true,
+        "output": "color",
+        "name": "SpriteShadow",
+        "skinned": false,
+        "preview": "2d",
+        "passes": [
+            {
+                "id": "shadow",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "image",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0.12,
+                        0.15,
+                        0.2,
+                        1
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "SpriteShadow_shadow",
+                "draw": "Sprite",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Default"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "阴影"
+            },
+            {
+                "id": "body",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "image",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0.12,
+                        0.15,
+                        0.2,
+                        1
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "SpriteShadow_body",
+                "draw": "Sprite",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Default"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "本体"
+            }
+        ],
+        "label": "精灵材质 / 阴影 + 本体"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "SpriteShadow_shadow",
+            "shader": "SpriteShadow_shadow",
+            "preview": "2d",
+            "fields": [
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Sprite image"
+                },
+                {
+                    "id": "hue",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.15,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "hue",
+                    "step": 0.01,
+                    "instance": true,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Hue"
+                },
+                {
+                    "id": "opacity",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "opacity",
+                    "step": 0.01,
+                    "instance": true,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Opacity"
+                },
+                {
+                    "id": "motion",
+                    "maximum": 256,
+                    "kind": "Vector3",
+                    "initial": [
+                        0,
+                        1.5,
+                        24,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "motion",
+                    "step": 0.01,
+                    "instance": true,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Motion"
+                }
+            ],
+            "label": "阴影",
+            "folder": ""
+        },
+        {
+            "name": "SpriteShadow_body",
+            "shader": "SpriteShadow_body",
+            "preview": "2d",
+            "fields": [
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Sprite image"
+                },
+                {
+                    "id": "hue",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.15,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "hue",
+                    "step": 0.01,
+                    "instance": true,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Hue"
+                },
+                {
+                    "id": "opacity",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "opacity",
+                    "step": 0.01,
+                    "instance": true,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Opacity"
+                },
+                {
+                    "id": "motion",
+                    "maximum": 256,
+                    "kind": "Vector3",
+                    "initial": [
+                        0,
+                        1.5,
+                        24,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "motion",
+                    "step": 0.01,
+                    "instance": true,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Motion"
+                }
+            ],
+            "label": "本体",
+            "folder": ""
+        }
+    ]
+}

@@ -2,7 +2,11 @@
   {
     "label": "ui_gallery",
     "command": "jacket",
-    "args": ["run", "-exe", "build/ui_gallery"],
+    "args": [
+      "run",
+      "-exe",
+      "build/ui_gallery"
+    ],
     "cwd": "$ZED_WORKTREE_ROOT",
     "allow_concurrent_runs": false,
     "reveal": "always"
@@ -10,7 +14,12 @@
   {
     "label": "game_ui",
     "command": "jacket",
-    "args": ["run", "-exe", "build/game_ui", "src/game_ui/main.jai"],
+    "args": [
+      "run",
+      "-exe",
+      "build/game_ui",
+      "src/game_ui/main.jai"
+    ],
     "cwd": "$ZED_WORKTREE_ROOT",
     "allow_concurrent_runs": false,
     "reveal": "always"
@@ -18,7 +27,12 @@
   {
     "label": "ui_motion",
     "command": "jacket",
-    "args": ["run", "-exe", "build/ui_motion", "src/ui_motion/main.jai"],
+    "args": [
+      "run",
+      "-exe",
+      "build/ui_motion",
+      "src/ui_motion/main.jai"
+    ],
     "cwd": "$ZED_WORKTREE_ROOT",
     "allow_concurrent_runs": false,
     "reveal": "always"
@@ -26,7 +40,129 @@
   {
     "label": "book_ui",
     "command": "jacket",
-    "args": ["run", "-exe", "build/book_ui", "src/book_ui/main.jai"],
+    "args": [
+      "run",
+      "-exe",
+      "build/book_ui",
+      "src/book_ui/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "gizmo2d",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/gizmo2d",
+      "src/gizmo2d/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "material2d",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/material2d",
+      "src/material2d/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "basic",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/basic",
+      "src/basic/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "batcher",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/batcher",
+      "src/batcher/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "app_composition",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/app_composition",
+      "src/app_composition/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "calc",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/calc",
+      "src/calc/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "spatial",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/spatial",
+      "src/spatial/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "feature",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/feature",
+      "src/feature/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "backend",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/backend",
+      "src/backend/main.jai"
+    ],
     "cwd": "$ZED_WORKTREE_ROOT",
     "allow_concurrent_runs": false,
     "reveal": "always"

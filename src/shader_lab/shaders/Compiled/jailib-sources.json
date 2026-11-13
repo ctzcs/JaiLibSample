@@ -1,0 +1,41 @@
+{
+  "policy": "jailib-shaders-1:vertex_main,fragment_main;spv;dxil=spirv|direct;msl",
+  "dxil": "direct",
+  "sources": {
+    "Palette.hlsli": "497feb08e364f122cf22032ed201f66ebcc794becc598b40052707c79fd0d425",
+    "SpriteShadow.oshader": "d78c29dadb07077f8945d61ec380616744c3413ccd927ddd3df8a02444f981a9",
+    "@include/olib/fullscreen.hlsli": "2f1aedead8b67e772ee55e6782d8a506dc092a63f56d448320c20bdbda4eacd3",
+    "@include/olib/instance.hlsli": "75655bbced095059c100e911c56560a6a243e2ad2d01f2f68c96d32baaf1088a",
+    "@include/olib/model.hlsli": "0a5a28e0c73195a0feff1dd1b7c2048cee5c510d9e3efc990a2db0066c907b1f",
+    "@include/olib/skinning.hlsli": "6c451a7456a664cc08f196a66b59933dfdc151dca8840a0aae776a508eb9987d",
+    "@include/olib/sprite.hlsli": "ca67b3050e456a5835368cdf56772a4c0b97c22495848923133aefda3184c048",
+    "@include/olib/sprite_vertex.hlsli": "1244684fc41a0a76e2ea9384e6daeb6026ff7b2e9f062e9548195384ea5e676a",
+    "@tool/main.py": "4a4ef59a303491b665936aa2b73d55f0bb1b242e8a316b4c6fb2eaa91d814c14",
+    "@tool/main.jai": "893bb30b4eedb8ba3da4b94969c865864aa2de076ac76b208e8f4ede39fefa4e"
+  },
+  "tools": {
+    "D:\\Tools\\ShaderCross\\bin\\shadercross.exe": "bbff1debc13baa72b00bdc4415ab5be8faba05dc5027294e181852840d1fa434",
+    "C:\\VulkanSDK\\1.4.357.0\\Bin\\dxc.exe": "b05bc2ba3355fda065f1b39fa3b1aa6d87689a84a290e5f201c5b6efcce6cab8"
+  },
+  "outputs": {
+    "SpriteShadow_body.vertex.spv": "4dd8aa504bd44534935a2d82fae4a73b4654a3eccf9103c0711c67a0ec38ba0b",
+    "SpriteShadow_body.vertex.dxil": "9012caefe702c228e4843e0657269660dcccf2ba6a0f986345d03b2ecfd080ab",
+    "SpriteShadow_body.vertex.msl": "04be87835242fd7c1bbae66d945400e55fef6628f20f05d6a182eba304c30510",
+    "SpriteShadow_body.fragment.spv": "63e73358d83709f5b3a4fe675f483f21637c762179778de945537457194b0807",
+    "SpriteShadow_body.fragment.dxil": "66d38e0f3b7a8d94bf3f29e8a52196f0704343fbffd94db320f7e0a55b69324e",
+    "SpriteShadow_body.fragment.msl": "0b03f26fdb0c1625ede4a8a2a670efe5616becac4c756a596c949da99cd9dabf",
+    "SpriteShadow_body.instanced.vertex.spv": "9964b56b8d78c5f1cb860c430e1fe6ca165a8be8c3506eef1261d66ec9ef7705",
+    "SpriteShadow_body.instanced.vertex.dxil": "07fbde73f8f1f594d38b2c67596f6c8ef7a34454a06e48dd03503410e47b8ce9",
+    "SpriteShadow_body.instanced.vertex.msl": "a5ef611dbaca430cdab93f445b32945330f954ab6c55e931e3805d5e2cce3142",
+    "SpriteShadow_shadow.vertex.spv": "e38efc37aa4b3f6801e0f6e6aecb9aeb1f2f5a8acda6e8561a64fd7fef269337",
+    "SpriteShadow_shadow.vertex.dxil": "d294e15cbebad592e45ec7fd6e119e049d1f5d7fffbe146f3c58e9e019627e2e",
+    "SpriteShadow_shadow.vertex.msl": "6ad84228548700c4896c62fddca9faf291b69021540585ab539b44ff5f9b0978",
+    "SpriteShadow_shadow.fragment.spv": "afff2caa010b99aa7bb84e37ae0a0982d2cf1ffe0127b6098e2d9162399e4f7d",
+    "SpriteShadow_shadow.fragment.dxil": "57fe6777fed86a6ee26ae969e31ec032c1b15459ce5cbbfd4b4d48ebf6c006cc",
+    "SpriteShadow_shadow.fragment.msl": "3693445bf3bc491d5ab49041f4ba1b7dbb546dcda58e8c61e51f0187a76567aa",
+    "SpriteShadow_shadow.instanced.vertex.spv": "8cafc75820a3d414d3b8f8f5f8daffe91ad0523040543b57b7bdba10135d59af",
+    "SpriteShadow_shadow.instanced.vertex.dxil": "6869287b6e57be88e7b1a69268f51206782d99e844708f3f3c26e48a6ed1537f",
+    "SpriteShadow_shadow.instanced.vertex.msl": "bae949c3f01f842e11d33e9ab7a41753eddd5e8ff23822ec151f1f9f4b015b7b",
+    "SpriteShadow.shader.json": "39903616a82dc7278d563360e970983081f1ebdcf9bc2c5541877a17f00c7749"
+  }
+}

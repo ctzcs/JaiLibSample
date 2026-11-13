@@ -2,7 +2,10 @@
 
 A collection of samples for validating the adjacent `JaiLib` checkout, following
 the `src/<sample>/` layout used by `olib_sample`.
-The migrated samples are `ui_gallery`, `game_ui`, `ui_motion`, and `book_ui`.
+The migrated samples are `ui_gallery`, `game_ui`, `ui_motion`, `book_ui`, `gizmo2d`,
+`material2d`, `basic`, `batcher`, `app_composition`, `calc`, `spatial`, `feature`,
+and `backend`.
+The remaining `olib_sample` examples and their status are listed at the end.
 
 ## Run in Zed
 
@@ -30,6 +33,15 @@ jacket run -exe build/ui_gallery
 jacket run -exe build/game_ui src/game_ui/main.jai
 jacket run -exe build/ui_motion src/ui_motion/main.jai
 jacket run -exe build/book_ui src/book_ui/main.jai
+jacket run -exe build/gizmo2d src/gizmo2d/main.jai
+jacket run -exe build/material2d src/material2d/main.jai
+jacket run -exe build/basic src/basic/main.jai
+jacket run -exe build/batcher src/batcher/main.jai
+jacket run -exe build/app_composition src/app_composition/main.jai
+jacket run -exe build/calc src/calc/main.jai
+jacket run -exe build/spatial src/spatial/main.jai
+jacket run -exe build/feature src/feature/main.jai
+jacket run -exe build/backend src/backend/main.jai
 ```
 
 Arguments after `--` are passed to the sample. See the
@@ -54,6 +66,15 @@ any running instance of that sample before trying again.
 | `game_ui` | Ruins scene, ability cooldowns, inventory, and pause settings; click to move, 1–6 for abilities, B for inventory, Esc to pause |
 | `ui_motion` | Card dragging, action slot swapping, hand sorting, tween animations, and a reward dialog; click or Enter to enqueue, GO to execute, Esc to cancel |
 | `book_ui` | Interactive six-page 3D book, curved two-sided page turns, depth occlusion, and ray picking; Left/Right to turn pages, Space to pause, right-drag to rotate, Shift+right-drag to roll, middle-drag to pan, mouse wheel to zoom, R to reset |
+| `gizmo2d` | Three viewports of 2D transform gizmos (move/rotate/scale) over the same three-object session; drag handles, arrows pan, Q/E rotate camera, Z/X zoom, R reset, Ctrl+Z/Y undo/redo; `shot` runs scripted input checks |
+| `material2d` | 12 sprites sharing one two-pass material (shadow + body): pass grouping by `pass_id` or by Render2D, per-instance `hue` for the right half, camera pan/zoom, perf overlay; `swarm` switches to a resident `Sprite_Buffer` (default 1,000,000 sprites, `count=N` to resize) drawn in one instanced call; `shot` renders offscreen, `auto` lets Render2D group passes, `vulkan` picks the Vulkan driver |
+| `basic` | Lowest-level foster sample: hand-built quad mesh, 1×1 white texture, offscreen target, and two draw commands |
+| `batcher` | Direct `foster.Batcher` shapes (rect, circle, line) drawn to the window |
+| `app_composition` | Application/user-data split: heap state attached to `App`, 60-frame lifetime, shutdown report |
+| `calc` | `foster/utility/calc`: lerp/clamp/map, polygon triangulation, RNG, polygon area |
+| `spatial` | `foster/spatial`: point/rect/line/circle/polygon math, transforms, cardinal points, QOI check |
+| `feature` | `foster` image pipeline: packer pages, QOI/PNG encode–decode round trips |
+| `backend` | `stb_truetype` font backend: metrics, glyph lookup, rasterized coverage bitmap |
 
 The game_ui volume and music controls, and book_ui spell and item interactions,
 only update demo state in memory. There is no audio playback or save system.
@@ -101,12 +122,20 @@ Controls use JaiLib's public API, and layouts use `clay.UI(..., #code {...})`.
    resources, leaving the device-owned font unchanged. This adapter is specific
    to the embedded **top-origin Roboto** font and cannot be applied directly to
    bottom-origin fonts.
-3. jfoster's SDL_GPU pipeline uses clockwise front faces. book_ui adjusts the
+3. Instanced vertex attributes must use the semantic numbers the standard includes declare
+   (`olib/instance.hlsli` starts at `TEXCOORD6`, sprites keep the corner at `TEXCOORD0`).
+   SDL_GPU's D3D12 backend derives each attribute's semantic from its location, so the olib
+   convention of "instance attributes at 0.. and shift the mesh attributes after them" produced
+   two `TEXCOORD0` inputs and `SDL_CreateGPUGraphicsPipeline` failed with `E_INVALIDARG`.
+   `sprite_instance_format` / `model_buffer_create` now emit `INSTANCE_SEMANTIC_BASE + i` and the
+   draw paths bind the mesh/corner buffers unchanged.
+4. jfoster's SDL_GPU pipeline uses clockwise front faces. book_ui adjusts the
    page index winding so that the two-sided shader's front face matches the
    logical front of each page. Otherwise, visible pages sample the white backing.
 
-These adaptations live in the samples; the adjacent JaiLib / jfoster source was
-not modified. Update the adapters when upstream font conventions are unified to
+Adaptations 1, 2 and 4 live in the samples. Adaptation 3 (and the shader-manifest
+ownership fixes described in the JaiLib `docs/PORTING.md` table) are changes inside
+the adjacent JaiLib checkout, kept in its working tree. Update the adapters when upstream font conventions are unified to
 avoid applying normalization twice.
 
 ## Validation coverage
@@ -140,6 +169,21 @@ jacket run -exe build/game_ui src/game_ui/main.jai -- shot modal
   boundaries, state retention, picking after orientation and zoom changes, back
   cover occlusion, keyboard controls, and actual page texture readback.
 
+The newly ported samples were validated on this machine as follows: all twelve
+samples build with `jacket build -exe build/<name> src/<name>/main.jai` (exit 0,
+no `error` text); `calc`, `spatial`, `feature`, `backend`, and `app_composition`
+run to a zero exit code with their expected console output; `basic`, `batcher`,
+and `gizmo2d` open a window with no errors or assertions; `gizmo2d -- shot` runs
+the scripted move/rotate/scale/undo/redo/resize checks and prints
+`GIZMO2D SMOKE PASS`, writing `library/screenshots/gizmo2d-<w>x<h>.png` and the
+post-resize capture. `material2d -- shot` renders 12 sprites through the two-pass
+`SpriteShadow` material and reports `2 draws`, writing
+`library/screenshots/material2d.png`; `-- shot auto` reaches the same draw count
+through Render2D's automatic pass grouping; `-- shot swarm count=20000` draws the
+resident sprite buffer in one instanced call and writes
+`library/screenshots/material2d-swarm.png`; a plain windowed run stays clean.
+ui_gallery still reports `SMOKE PASS (20 checks)`.
+
 Near the end of their smoke runs, ui_motion and book_ui switch to a 760×800 window
 with 125% UI scaling. Screenshots from the newer samples are saved to
 `library/screenshots/<sample>-<initial-scale>-<mode>.png`.
@@ -147,5 +191,19 @@ with 125% UI scaling. Screenshots from the newer samples are saved to
 The book_ui 3D path uses matrix and uniform data packing from `kit/world` and
 `kit/rendering/3d`, together with jfoster's mesh and depth rendering interfaces.
 D3D12 and Vulkan shaders are included. Local validation used D3D12; Vulkan has
-not been validated. The remaining samples and features such as audio, networking,
-and hot reload still need migration and validation.
+not been validated.
+
+## Remaining olib_sample examples
+
+| Sample | Status |
+| --- | --- |
+| `hotreload`, `tween_preview` | Blocked: both drive `core/hotreload` by compiling an Odin module into a DLL and swapping it at runtime. jacket has no shared-library output, so there is no honest Jai equivalent yet. |
+| `net_arena`, `net_fps` | Blocked: need `thirdparty/onet` and `thirdparty/voice`, which JaiLib has not translated (`docs/OLIB_PARITY.md`). |
+| `material3d` | Not ported yet: it needs the same Shader Lab artifacts (now working, see below) plus a `Render3D` model/instancing port (~550 lines with MSAA options, orbit camera, and a million-sphere swarm). |
+| `meshview`, `forward3d`, `stylized3d` | Need per-sample 3D shaders. `kit/rendering/3d` currently ships only its own embedded shader set, so these samples cannot register custom 3D materials through the public API yet. |
+| `scene_notes`, `shader_lab` | `kit/tools/scene_notes` and `kit/tools/shader_lab` are ported, but the ImGui host wiring and the Shader Lab asset set still have to be assembled in the sample. `shader_lab` also hits the manifest-registration defect above. |
+
+The gizmo2d port keeps `editor.jai` (document transactions and viewport input)
+separate from `main.jai` (host, input, and pixel drawing), matching the Odin
+sample's split. Its scripted `shot` run injects pointer input inside the render
+frame, so the editor sees press/move/release on the same frame as the script.
