@@ -3,8 +3,8 @@
 A collection of samples for validating the adjacent `JaiLib` checkout, following
 the `src/<sample>/` layout used by `olib_sample`.
 The migrated samples are `ui_gallery`, `game_ui`, `ui_motion`, `book_ui`, `gizmo2d`,
-`material2d`, `cjk_ui`, `basic`, `batcher`, `app_composition`, `calc`, `spatial`,
-`feature`, and `backend`.
+`material2d`, `cjk_ui`, `hotreload`, `basic`, `batcher`, `app_composition`, `calc`,
+`spatial`, `feature`, and `backend`.
 The remaining `olib_sample` examples and their status are listed at the end.
 
 ## Run in Zed
@@ -36,6 +36,8 @@ jacket run -exe build/book_ui src/book_ui/main.jai
 jacket run -exe build/gizmo2d src/gizmo2d/main.jai
 jacket run -exe build/material2d src/material2d/main.jai
 jacket run -exe build/cjk_ui src/cjk_ui/main.jai -- cjk
+jacket run -exe build/hotreload src/hotreload/main.jai            # 保存 game/game.jai 即换模块
+jacket run -exe build/hotreload src/hotreload/main.jai -- selftest
 jacket run -exe build/basic src/basic/main.jai
 jacket run -exe build/batcher src/batcher/main.jai
 jacket run -exe build/app_composition src/app_composition/main.jai
@@ -70,6 +72,7 @@ any running instance of that sample before trying again.
 | `gizmo2d` | Three viewports of 2D transform gizmos (move/rotate/scale) over the same three-object session; drag handles, arrows pan, Q/E rotate camera, Z/X zoom, R reset, Ctrl+Z/Y undo/redo; `shot` runs scripted input checks |
 | `material2d` | 12 sprites sharing one two-pass material (shadow + body): pass grouping by `pass_id` or by Render2D, per-instance `hue` for the right half, camera pan/zoom, perf overlay; `swarm` switches to a resident `Sprite_Buffer` (default 1,000,000 sprites, `count=N` to resize) drawn in one instanced call; `shot` renders offscreen, `auto` lets Render2D group passes, `vulkan` picks the Vulkan driver |
 | `cjk_ui` | Chinese text through `kit/ui`: the same Clay panel rendered with two fonts. `-- cjk` registers `shared/msdf_font/ui.json` + `ui.png` (Noto Sans CJK SC subset, msdf-atlas-gen 1.4, ASCII + sample Chinese vocabulary); omitting it falls back to the embedded Roboto atlas, which has no CJK glyphs |
+| `hotreload` | Window/Render2D stay in the host; the game logic lives in `src/hotreload/game/game.jai` and is built into `build/hotreload-game-<n>.dll`. Saving the source rebuilds it (through `src/hotreload/build.jai`, which uses the Compiler metaprogramming API) and swaps the module while game state survives. `-- selftest` edits the source, waits for the rebuild, and asserts the new module is live |
 | `basic` | Lowest-level foster sample: hand-built quad mesh, 1×1 white texture, offscreen target, and two draw commands |
 | `batcher` | Direct `foster.Batcher` shapes (rect, circle, line) drawn to the window |
 | `app_composition` | Application/user-data split: heap state attached to `App`, 60-frame lifetime, shutdown report |
@@ -200,6 +203,22 @@ The book_ui 3D path uses matrix and uniform data packing from `kit/world` and
 D3D12 and Vulkan shaders are included. Local validation used D3D12; Vulkan has
 not been validated.
 
+## Hot reload
+
+`jaic` has no shared-library command-line switch, but that does not mean DLLs are impossible:
+the Compiler metaprogramming API can set `Build_Options.output_type = .DYNAMIC_LIBRARY`.
+`src/hotreload/build.jai` does exactly that at compile time and writes a real `.dll`
+(`objdump -p` shows `game_update` / `game_version` in the export table).
+The host then:
+
+1. writes the next output name to `build/hotreload-target.txt` (the loaded DLL is mapped, so
+   the linker cannot overwrite it),
+2. runs `jaic` on the build script,
+3. loads the new DLL, then frees the previous one, keeping host-owned game state intact.
+
+`hotreload -- selftest` verifies the whole loop: it appends a line to the game source, waits for
+the rebuild, and prints `HOTRELOAD SMOKE PASS` once the new module is running (old DLL removed).
+
 ## Chinese text
 
 Two independent font paths, both verified on this machine:
@@ -227,7 +246,7 @@ The generator is not vendored here; the copy used for this run is
 
 | Sample | Status |
 | --- | --- |
-| `hotreload`, `tween_preview` | Blocked: both drive `core/hotreload` by compiling an Odin module into a DLL and swapping it at runtime. jacket has no shared-library output, so there is no honest Jai equivalent yet. |
+| `tween_preview` | Host is portable now that DLL builds work (see `hotreload`), but it also needs the preview module's motion DSL ported; not started. |
 | `net_arena`, `net_fps` | Blocked: need `thirdparty/onet` and `thirdparty/voice`, which JaiLib has not translated (`docs/OLIB_PARITY.md`). |
 | `material3d` | Not ported yet: it needs the same Shader Lab artifacts (now working, see below) plus a `Render3D` model/instancing port (~550 lines with MSAA options, orbit camera, and a million-sphere swarm). |
 | `meshview`, `forward3d`, `stylized3d` | Need per-sample 3D shaders. `kit/rendering/3d` currently ships only its own embedded shader set, so these samples cannot register custom 3D materials through the public API yet. |

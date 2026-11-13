@@ -92,6 +92,19 @@
     "reveal": "always"
   },
   {
+    "label": "hotreload",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/hotreload",
+      "src/hotreload/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
     "label": "basic",
     "command": "jacket",
     "args": [
