@@ -1,0 +1,11 @@
+{
+  "lsp": {
+    "jailsp": {
+      "settings": {
+        "jai": {
+          "trusted": true
+        }
+      }
+    }
+  }
+}

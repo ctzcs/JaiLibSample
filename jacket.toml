@@ -1,0 +1,3 @@
+[project]
+entry = "src/ui_gallery/main.jai"
+import_path = ["../JaiLib"]

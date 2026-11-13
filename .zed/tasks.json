@@ -1,0 +1,34 @@
+[
+  {
+    "label": "ui_gallery",
+    "command": "jacket",
+    "args": ["run", "-exe", "build/ui_gallery"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "game_ui",
+    "command": "jacket",
+    "args": ["run", "-exe", "build/game_ui", "src/game_ui/main.jai"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "ui_motion",
+    "command": "jacket",
+    "args": ["run", "-exe", "build/ui_motion", "src/ui_motion/main.jai"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "book_ui",
+    "command": "jacket",
+    "args": ["run", "-exe", "build/book_ui", "src/book_ui/main.jai"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  }
+]
