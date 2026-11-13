@@ -3,8 +3,8 @@
 A collection of samples for validating the adjacent `JaiLib` checkout, following
 the `src/<sample>/` layout used by `olib_sample`.
 The migrated samples are `ui_gallery`, `game_ui`, `ui_motion`, `book_ui`, `gizmo2d`,
-`material2d`, `basic`, `batcher`, `app_composition`, `calc`, `spatial`, `feature`,
-and `backend`.
+`material2d`, `cjk_ui`, `basic`, `batcher`, `app_composition`, `calc`, `spatial`,
+`feature`, and `backend`.
 The remaining `olib_sample` examples and their status are listed at the end.
 
 ## Run in Zed
@@ -35,6 +35,7 @@ jacket run -exe build/ui_motion src/ui_motion/main.jai
 jacket run -exe build/book_ui src/book_ui/main.jai
 jacket run -exe build/gizmo2d src/gizmo2d/main.jai
 jacket run -exe build/material2d src/material2d/main.jai
+jacket run -exe build/cjk_ui src/cjk_ui/main.jai -- cjk
 jacket run -exe build/basic src/basic/main.jai
 jacket run -exe build/batcher src/batcher/main.jai
 jacket run -exe build/app_composition src/app_composition/main.jai
@@ -68,6 +69,7 @@ any running instance of that sample before trying again.
 | `book_ui` | Interactive six-page 3D book, curved two-sided page turns, depth occlusion, and ray picking; Left/Right to turn pages, Space to pause, right-drag to rotate, Shift+right-drag to roll, middle-drag to pan, mouse wheel to zoom, R to reset |
 | `gizmo2d` | Three viewports of 2D transform gizmos (move/rotate/scale) over the same three-object session; drag handles, arrows pan, Q/E rotate camera, Z/X zoom, R reset, Ctrl+Z/Y undo/redo; `shot` runs scripted input checks |
 | `material2d` | 12 sprites sharing one two-pass material (shadow + body): pass grouping by `pass_id` or by Render2D, per-instance `hue` for the right half, camera pan/zoom, perf overlay; `swarm` switches to a resident `Sprite_Buffer` (default 1,000,000 sprites, `count=N` to resize) drawn in one instanced call; `shot` renders offscreen, `auto` lets Render2D group passes, `vulkan` picks the Vulkan driver |
+| `cjk_ui` | Chinese text through `kit/ui`: the same Clay panel rendered with two fonts. `-- cjk` registers `shared/msdf_font/ui.json` + `ui.png` (Noto Sans CJK SC subset, msdf-atlas-gen 1.4, ASCII + sample Chinese vocabulary); omitting it falls back to the embedded Roboto atlas, which has no CJK glyphs |
 | `basic` | Lowest-level foster sample: hand-built quad mesh, 1×1 white texture, offscreen target, and two draw commands |
 | `batcher` | Direct `foster.Batcher` shapes (rect, circle, line) drawn to the window |
 | `app_composition` | Application/user-data split: heap state attached to `App`, 60-frame lifetime, shutdown report |
@@ -183,7 +185,8 @@ the scripted move/rotate/scale/undo/redo/resize checks and prints
 post-resize capture. `material2d -- shot` renders 12 sprites through the two-pass
 `SpriteShadow` material and reports `2 draws`, writing
 `library/screenshots/material2d.png`; `-- shot auto` reaches the same draw count
-through Render2D's automatic pass grouping; `-- shot swarm count=20000` draws the
+through Render2D's automatic pass grouping; cjk_ui reports `SMOKE PASS` for its button check and
+renders Chinese in `-- shot cjk`; `-- shot swarm count=20000` draws the
 resident sprite buffer in one instanced call and writes
 `library/screenshots/material2d-swarm.png`; a plain windowed run stays clean.
 ui_gallery still reports `SMOKE PASS (20 checks)`.
@@ -196,6 +199,29 @@ The book_ui 3D path uses matrix and uniform data packing from `kit/world` and
 `kit/rendering/3d`, together with jfoster's mesh and depth rendering interfaces.
 D3D12 and Vulkan shaders are included. Local validation used D3D12; Vulkan has
 not been validated.
+
+## Chinese text
+
+Two independent font paths, both verified on this machine:
+
+- `kit/ui` (Clay) takes an **MSDF atlas**. `shared/msdf_font/` carries the
+  Noto Sans CJK SC subset atlas copied from `olib_sample` (512 glyphs, 1168×1168 after the
+  charset edit below), licensed OFL, `yOrigin=top`, and plugs into the existing
+  `prepare_ui_font` adapter in `src/ui_gallery/font.jai`. `cjk_ui -- cjk` proves it renders.
+  A glyph outside the charset renders blank, so the charset has to cover the UI vocabulary.
+- `r2d` text takes a runtime **bitmap** `Sprite_Font`: `font_load` a CJK TTF/OTF and pass the
+  codepoints you need (`sprite_font_create_from_font`). No offline step. Decode UTF-8 with
+  `foster.rune_iterator` / `rune_next`; iterating the string byte-by-byte builds the wrong glyphs.
+
+Regenerating the atlas (charset is `[32, 126]` plus `0xXXXX` lines, one codepoint per line):
+
+```sh
+msdf-atlas-gen -font NotoSansCJKsc-Regular.otf -charset shared/msdf_font/charset.txt   -type msdf -format png -size 48 -pxrange 8 -yorigin top -seed 0   -imageout shared/msdf_font/ui.png -json shared/msdf_font/ui.json
+```
+
+The generator is not vendored here; the copy used for this run is
+`../olib/build/msdf-tools/msdf-atlas-gen/msdf-atlas-gen.exe` (1.4) with the source font at
+`../olib/build/msdf-fonts/NotoSansCJKsc-Regular.otf`. The atlas PNG and JSON must stay together.
 
 ## Remaining olib_sample examples
 

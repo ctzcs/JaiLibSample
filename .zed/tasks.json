@@ -77,6 +77,21 @@
     "reveal": "always"
   },
   {
+    "label": "cjk_ui",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/cjk_ui",
+      "src/cjk_ui/main.jai",
+      "--",
+      "cjk"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
     "label": "basic",
     "command": "jacket",
     "args": [

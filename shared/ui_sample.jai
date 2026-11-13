@@ -24,6 +24,7 @@ Host :: struct {
     pointer: F.Vector2;
     down, pressed, released: bool;
     name: string;
+    cjk_font: *F.Msdf_Font;   // 只有 -- cjk 时非空，由宿主释放
 }
 h: Host;
 
@@ -50,6 +51,19 @@ host_start :: () {
     _ = F.defaults_msdf_material(F.App.device);
     assert(R.init(*h.renderer, *h.materials) == "");
     source := F.defaults_msdf_font(F.App.device);
+    // `-- cjk`：改用 shared/msdf_font 的中文图集（olib 的 Noto Sans CJK SC 子集，
+    // msdf-atlas-gen 1.4 生成，ASCII + 示例中文词表，512 字形）。同样是 top-origin、em 行高，
+    // 走同一个 prepare_ui_font 适配。
+    if has_arg("cjk") {
+        loaded := F.msdf_font_load_paths("shared/msdf_font/ui.json", "shared/msdf_font/ui.png");
+        if loaded == null {
+            print("[%] cjk atlas missing; falling back to Roboto
+", h.name);
+        } else {
+            h.cjk_font = loaded;
+            source = loaded;
+        }
+    }
     prepare_ui_font(source, *h.font);
     h.font_texture = F.texture_create_from_colors(F.App.device, source.Atlas.Width, source.Atlas.Height, source.Atlas.Data);
     UI.ui_register_font(*h.ui, *h.font, h.font_texture, .MSDF);
@@ -111,6 +125,7 @@ host_stop :: () {
     sample_stop();
     UI.ui_dispose(*h.ui); R.dispose(*h.renderer); MAT.material_library_dispose(*h.materials);
     F.texture_dispose(h.font_texture); free(h.font_texture); array_free(h.font.Glyphs);
+    if h.cjk_font != null F.msdf_font_destroy(h.cjk_font);
 }
 sample_capture :: () {
     back := F.graphics_device_get_backbuffer(F.App.device, F.App.window);
