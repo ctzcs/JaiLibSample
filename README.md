@@ -129,11 +129,15 @@ Controls use JaiLib's public API, and layouts use `clay.UI(..., #code {...})`.
    two `TEXCOORD0` inputs and `SDL_CreateGPUGraphicsPipeline` failed with `E_INVALIDARG`.
    `sprite_instance_format` / `model_buffer_create` now emit `INSTANCE_SEMANTIC_BASE + i` and the
    draw paths bind the mesh/corner buffers unchanged.
-4. jfoster's SDL_GPU pipeline uses clockwise front faces. book_ui adjusts the
+4. `defaults_batch_material` does not set its own projection: the Batcher shader reads b0, so a
+   sample that draws a raw mesh with it must upload a `Matrix4` to vertex uniform slot 0
+   (`basic` uses identity because its quad is already in clip space; the Batcher path builds an
+   orthographic matrix per target).
+5. jfoster's SDL_GPU pipeline uses clockwise front faces. book_ui adjusts the
    page index winding so that the two-sided shader's front face matches the
    logical front of each page. Otherwise, visible pages sample the white backing.
 
-Adaptations 1, 2 and 4 live in the samples. Adaptation 3 (and the shader-manifest
+Adaptations 1, 2 and 5 live in the samples. Adaptations 3 and 4 (and the shader-manifest
 ownership fixes described in the JaiLib `docs/PORTING.md` table) are changes inside
 the adjacent JaiLib checkout, kept in its working tree. Update the adapters when upstream font conventions are unified to
 avoid applying normalization twice.
