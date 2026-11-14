@@ -1,0 +1,270 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": false,
+        "output": "color",
+        "name": "Unified",
+        "skinned": false,
+        "preview": "2d",
+        "passes": [
+            {
+                "id": "rings",
+                "output": "rings",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0.5,
+                    "format": "Float16",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Unified_rings",
+                "draw": "Fullscreen",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Default"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Rings"
+            },
+            {
+                "id": "tint",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Unified_tint",
+                "draw": "Fullscreen",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Opaque"
+                },
+                "inputs": [
+                    {
+                        "frame": "Current",
+                        "field": "Source",
+                        "target": "rings"
+                    }
+                ],
+                "values": [],
+                "label": "Tint"
+            }
+        ],
+        "label": "Single-file / rings + tint"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Unified_rings",
+            "shader": "Unified_rings",
+            "preview": "2d",
+            "fields": [
+                {
+                    "id": "Speed",
+                    "maximum": 5,
+                    "kind": "Scalar",
+                    "initial": [
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "Speed",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Speed"
+                },
+                {
+                    "id": "Strength",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.65,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "Strength",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Strength"
+                },
+                {
+                    "id": "Tint",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.2,
+                        0.65,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "Tint",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Tint"
+                },
+                {
+                    "id": "Source",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "Source",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Source"
+                }
+            ],
+            "label": "Rings",
+            "folder": ""
+        },
+        {
+            "name": "Unified_tint",
+            "shader": "Unified_tint",
+            "preview": "2d",
+            "fields": [
+                {
+                    "id": "Speed",
+                    "maximum": 5,
+                    "kind": "Scalar",
+                    "initial": [
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "Speed",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Speed"
+                },
+                {
+                    "id": "Strength",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.65,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "Strength",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Strength"
+                },
+                {
+                    "id": "Tint",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.2,
+                        0.65,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "Tint",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Tint"
+                },
+                {
+                    "id": "Source",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "Source",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Source"
+                }
+            ],
+            "label": "Tint",
+            "folder": ""
+        }
+    ]
+}

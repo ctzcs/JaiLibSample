@@ -2,8 +2,10 @@
 // 改动它等于改协议，宿主和模块要一起重编。
 Game_State :: struct {
     x, y:   float32;
-    angle:  float32;
-    radius: float32;
+    move_x, move_y, size: float32;
+    color: [4]u8;
+    trail_x,trail_y: [24]float32;
+    trail_head,trail_count: int;
     frames: int;
     reloads: int;
 }

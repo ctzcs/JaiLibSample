@@ -1,0 +1,140 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": true,
+        "output": "color",
+        "name": "Toon",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "scene",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Toon_scene",
+                "draw": "Model",
+                "state": {
+                    "cull": "Back",
+                    "depth": "Less",
+                    "depth_write": "On",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Scene"
+            }
+        ],
+        "label": "stylized3d / Scene"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Toon_scene",
+            "shader": "Toon_scene",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "color",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "color",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Color"
+                },
+                {
+                    "id": "terrain",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "terrain",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Meadow ground"
+                },
+                {
+                    "id": "flower",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "flower",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Flower mesh"
+                },
+                {
+                    "id": "sunDepth",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "sunDepth",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": true,
+                    "minimum": 0,
+                    "filter": "Nearest",
+                    "label": "Sun shadow"
+                }
+            ],
+            "label": "Scene",
+            "folder": ""
+        }
+    ]
+}

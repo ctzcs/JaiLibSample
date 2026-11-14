@@ -1,0 +1,119 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": false,
+        "output": "color",
+        "name": "Water",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "water",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Water_water",
+                "draw": "Model",
+                "state": {
+                    "cull": "None",
+                    "depth": "Less",
+                    "depth_write": "On",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": ""
+            }
+        ],
+        "label": "stylized3d / Reflective pond"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Water_water",
+            "shader": "Water_water",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "reflection",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "reflection",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": true,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Planar reflection"
+                },
+                {
+                    "id": "deep",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.065,
+                        0.17,
+                        0.3,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "deep",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Deep blue"
+                },
+                {
+                    "id": "shallow",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.18,
+                        0.4,
+                        0.48,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "shallow",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Shallow blue"
+                }
+            ],
+            "label": "",
+            "folder": ""
+        }
+    ]
+}

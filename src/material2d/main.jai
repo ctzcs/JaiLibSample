@@ -13,6 +13,7 @@ PROF :: #import "core/profiler";
 PERF :: #import "kit/tools/perf_overlay";
 
 #load "swarm.jai";
+#load "../ui_gallery/font.jai";
 
 SPRITE_COUNT :: 12;
 
@@ -34,6 +35,7 @@ State :: struct {
     offset, mouse_last: F.Vector2;
     perf: PERF.Overlay;
     font: *F.Msdf_Font;
+    font_view: F.Msdf_Font;       // Adapted metrics/UVs owned by this sample; atlas is borrowed.
     font_texture: *F.Texture;
     time: float32;
     failed: bool;
@@ -110,13 +112,15 @@ startup :: () {
     reason = R.init(*state.renderer, *state.materials);
     if reason != "" { fail(reason); return; }
 
-    if !state.shot {
+    {
         PROF.profile_init();
         state.font = F.defaults_msdf_font(F.App.device);
+        prepare_ui_font(state.font, *state.font_view);
         state.font_texture = F.texture_create_from_colors(F.App.device,
             state.font.Atlas.Width, state.font.Atlas.Height, state.font.Atlas.Data);
         state.perf.corner = .Top_Right;
-        state.perf.visible = PERF.init(*state.perf, F.App.device, state.font, state.font_texture);
+        state.perf.visible = PERF.init(*state.perf, F.App.device, *state.font_view, state.font_texture);
+        assert(state.perf.visible, "Performance overlay failed to initialize");
     }
 
     image := F.image_create(256, 256);
@@ -263,10 +267,10 @@ render :: () {
 
 // 场景提交之后叠加性能面板：它自带 Render2D 单独提交，不计入场景 Draw。
 draw_panel :: (target: F.Drawable_Target) {
-    if state.shot return;
     PERF.draw(*state.perf, target,
-        cast(float32) F.drawable_target_width_in_pixels(target)
-        / cast(float32) max(1, F.window_size(F.App.window).x));
+        ifx has_arg("scaled") then cast(float32)1.25 else
+            cast(float32) F.drawable_target_width_in_pixels(target)
+            / cast(float32) max(1, F.window_size(F.App.window).x));
 }
 
 // shot 模式：固定帧数后读回离屏目标写 PNG 并退出。
@@ -292,12 +296,16 @@ save_capture :: () {
     name := ifx state.swarm_on
         then "library/screenshots/material2d-swarm.png"
         else "library/screenshots/material2d.png";
-    print("%\n", FILE.write_entire_file(name, cast(string) png));
+    assert(FILE.write_entire_file(name,cast(string)png));
+    changed:=0; for p:image.Data if p.r>60 || p.g>60 || p.b>60 changed+=1;
+    assert(changed>100,"Blank material2d render");
+    print("[material2d] GPU PASS\n");
 }
 
 shutdown :: () {
     swarm_dispose();
-    if !state.shot PERF.dispose(*state.perf);
+    PERF.dispose(*state.perf);
+    array_free(state.font_view.Glyphs);
     if state.font_texture != null F.texture_dispose(state.font_texture);
     if state.shot && state.capture != null F.target_dispose(state.capture);
     R.dispose(*state.renderer);

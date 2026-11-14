@@ -1,0 +1,36 @@
+{
+  "policy": "jailib-sample-shaders-1:vertex_main,fragment_main;spv;dxil=direct;msl",
+  "dxil": "direct",
+  "sources": {
+    "EnvironmentUv.hlsli": "563fd42f016c6d7958b192858fafb8058af92739deb94db3d26fb308b1d19f7e",
+    "Standard3D.hlsl": "f8db4cf96f9607a354f88c3c0088ed92ce5ed9d5e516cb07a9b70a45c86d93da",
+    "Standard3DCommon.hlsli": "fb213eeecee0c72e18350801eb710f02718d8417fc3cffd10e75766c833bb761",
+    "Standard3DSkinned.hlsl": "68eb65f09f02fe28a5850f8b76b0d9376958c84db221c4ca1fe7d0128adb099e",
+    "@include/olib/fullscreen.hlsli": "2f1aedead8b67e772ee55e6782d8a506dc092a63f56d448320c20bdbda4eacd3",
+    "@include/olib/instance.hlsli": "75655bbced095059c100e911c56560a6a243e2ad2d01f2f68c96d32baaf1088a",
+    "@include/olib/model.hlsli": "0a5a28e0c73195a0feff1dd1b7c2048cee5c510d9e3efc990a2db0066c907b1f",
+    "@include/olib/skinning.hlsli": "6c451a7456a664cc08f196a66b59933dfdc151dca8840a0aae776a508eb9987d",
+    "@include/olib/sprite.hlsli": "ca67b3050e456a5835368cdf56772a4c0b97c22495848923133aefda3184c048",
+    "@include/olib/sprite_vertex.hlsli": "1244684fc41a0a76e2ea9384e6daeb6026ff7b2e9f062e9548195384ea5e676a",
+    "@tool/build_shaders.py": "c1909f1c4e036b3e450c381a3533ca56d51c8ca8099d86ded1177a0bab4f087b",
+    "@tool/main.jai": "893bb30b4eedb8ba3da4b94969c865864aa2de076ac76b208e8f4ede39fefa4e"
+  },
+  "tools": {
+    "shadercross.EXE": "bbff1debc13baa72b00bdc4415ab5be8faba05dc5027294e181852840d1fa434",
+    "dxc.EXE": "b05bc2ba3355fda065f1b39fa3b1aa6d87689a84a290e5f201c5b6efcce6cab8"
+  },
+  "outputs": {
+    "Standard3D.fragment.dxil": "c747394e6e59f6514b4d2f536a1a87d38878fb8ee44c5456a7a208ca1f6ee617",
+    "Standard3D.fragment.msl": "1ab5bb3bd12868b5e5047fe6e73192134db7ba8bf073bb024dc763d03c6011b3",
+    "Standard3D.fragment.spv": "e66894ab7f172a1be0af0a02f6ca8892e9c83191f332696b3bb50b697c87e06f",
+    "Standard3D.vertex.dxil": "1e73d4795d7f228fac73de214915a6b0f723108156f99195eea7d8b028cd9fd0",
+    "Standard3D.vertex.msl": "9630570420fa4792ce0e399794b794944606a932d380383fde4d72f29c8ce2ad",
+    "Standard3D.vertex.spv": "f2f3a6674e3038efa1d6d97ab9b6249eabafdbff900b91576c52a16c5b9dcea2",
+    "Standard3DSkinned.fragment.dxil": "c747394e6e59f6514b4d2f536a1a87d38878fb8ee44c5456a7a208ca1f6ee617",
+    "Standard3DSkinned.fragment.msl": "1ab5bb3bd12868b5e5047fe6e73192134db7ba8bf073bb024dc763d03c6011b3",
+    "Standard3DSkinned.fragment.spv": "e66894ab7f172a1be0af0a02f6ca8892e9c83191f332696b3bb50b697c87e06f",
+    "Standard3DSkinned.vertex.dxil": "d79ade307159d3581d7aed63934fe35134c93e7180a493d7a95028a6053b0cf3",
+    "Standard3DSkinned.vertex.msl": "1f97f33eca18de244a756dd802665e9d133b4fa8b1c7eb204ee262f80e414010",
+    "Standard3DSkinned.vertex.spv": "6cf7df1b4e2702b0cc89fbfc99079e97a9892dcdcef84bcc29db952468d8dde6"
+  }
+}

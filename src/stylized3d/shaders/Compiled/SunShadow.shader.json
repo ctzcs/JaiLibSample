@@ -1,0 +1,77 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": true,
+        "output": "color",
+        "name": "SunShadow",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "shadow",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "SunShadow_shadow",
+                "draw": "Model",
+                "state": {
+                    "cull": "Back",
+                    "depth": "Less",
+                    "depth_write": "On",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": ""
+            }
+        ],
+        "label": "stylized3d / Instanced sun depth"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "SunShadow_shadow",
+            "shader": "SunShadow_shadow",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "unused",
+                    "maximum": 10000,
+                    "kind": "Scalar",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "unused",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": -10000,
+                    "filter": "Linear",
+                    "label": "Unused"
+                }
+            ],
+            "label": "",
+            "folder": ""
+        }
+    ]
+}

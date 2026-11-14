@@ -1,0 +1,98 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": true,
+        "output": "color",
+        "name": "Arena",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "main",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Arena_main",
+                "draw": "Model",
+                "state": {
+                    "cull": "Back",
+                    "depth": "Less",
+                    "depth_write": "On",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Main"
+            }
+        ],
+        "label": "net_fps / Arena"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Arena_main",
+            "shader": "Arena_main",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "grid",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "grid",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Grid lines"
+                },
+                {
+                    "id": "emissive",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "emissive",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Emissive"
+                }
+            ],
+            "label": "Main",
+            "folder": ""
+        }
+    ]
+}

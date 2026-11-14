@@ -1,0 +1,1059 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": false,
+        "output": "result",
+        "name": "Trail3D",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "feedback",
+                "output": "result",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Trail3D_feedback",
+                "draw": "Fullscreen",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Default"
+                },
+                "inputs": [
+                    {
+                        "frame": "Current",
+                        "field": "source",
+                        "target": "blur_y"
+                    },
+                    {
+                        "frame": "Previous",
+                        "field": "history",
+                        "target": "result"
+                    }
+                ],
+                "values": [],
+                "label": "上一帧反馈"
+            },
+            {
+                "id": "scene",
+                "output": "scene_color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Float16",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Trail3D_scene",
+                "draw": "Preview_Model",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Default"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "绘制场景"
+            },
+            {
+                "id": "blur_x",
+                "output": "blur_x",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0.5,
+                    "format": "Float16",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Trail3D_blur_x",
+                "draw": "Fullscreen",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Default"
+                },
+                "inputs": [
+                    {
+                        "frame": "Current",
+                        "field": "source",
+                        "target": "scene_color"
+                    }
+                ],
+                "values": [
+                    {
+                        "number": [
+                            1,
+                            0,
+                            0,
+                            0
+                        ],
+                        "field": "direction"
+                    }
+                ],
+                "label": "横向模糊"
+            },
+            {
+                "id": "blur_y",
+                "output": "blur_y",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0.5,
+                    "format": "Float16",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Trail3D_blur_y",
+                "draw": "Fullscreen",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Default"
+                },
+                "inputs": [
+                    {
+                        "frame": "Current",
+                        "field": "source",
+                        "target": "blur_x"
+                    }
+                ],
+                "values": [
+                    {
+                        "number": [
+                            0,
+                            1,
+                            0,
+                            0
+                        ],
+                        "field": "direction"
+                    }
+                ],
+                "label": "纵向模糊"
+            }
+        ],
+        "label": "三维拖尾"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Trail3D_feedback",
+            "shader": "Trail3D_feedback",
+            "preview": "2d",
+            "fields": [
+                {
+                    "id": "source",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "source",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Source"
+                },
+                {
+                    "id": "direction",
+                    "maximum": 1,
+                    "kind": "Vector2",
+                    "initial": [
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "direction",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": -1,
+                    "filter": "Linear",
+                    "label": "Direction"
+                },
+                {
+                    "id": "radius",
+                    "maximum": 12,
+                    "kind": "Scalar",
+                    "initial": [
+                        3,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "radius",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Radius"
+                },
+                {
+                    "id": "history",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "history",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "History"
+                },
+                {
+                    "id": "retention",
+                    "maximum": 0.99,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.82,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "retention",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Retention"
+                },
+                {
+                    "id": "strength",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.65,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "strength",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Strength"
+                },
+                {
+                    "id": "hue",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.15,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "hue",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Hue"
+                },
+                {
+                    "id": "speed",
+                    "maximum": 5,
+                    "kind": "Scalar",
+                    "initial": [
+                        2,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "speed",
+                    "step": 0.1,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Flow speed"
+                },
+                {
+                    "id": "tint",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "tint",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Tint"
+                },
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Texture"
+                }
+            ],
+            "label": "上一帧反馈",
+            "folder": ""
+        },
+        {
+            "name": "Trail3D_scene",
+            "shader": "Trail3D_scene",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "source",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "source",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Source"
+                },
+                {
+                    "id": "direction",
+                    "maximum": 1,
+                    "kind": "Vector2",
+                    "initial": [
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "direction",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": -1,
+                    "filter": "Linear",
+                    "label": "Direction"
+                },
+                {
+                    "id": "radius",
+                    "maximum": 12,
+                    "kind": "Scalar",
+                    "initial": [
+                        3,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "radius",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Radius"
+                },
+                {
+                    "id": "history",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "history",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "History"
+                },
+                {
+                    "id": "retention",
+                    "maximum": 0.99,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.82,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "retention",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Retention"
+                },
+                {
+                    "id": "strength",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.65,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "strength",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Strength"
+                },
+                {
+                    "id": "hue",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.15,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "hue",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Hue"
+                },
+                {
+                    "id": "speed",
+                    "maximum": 5,
+                    "kind": "Scalar",
+                    "initial": [
+                        2,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "speed",
+                    "step": 0.1,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Flow speed"
+                },
+                {
+                    "id": "tint",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "tint",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Tint"
+                },
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Texture"
+                }
+            ],
+            "label": "绘制场景",
+            "folder": ""
+        },
+        {
+            "name": "Trail3D_blur_x",
+            "shader": "Trail3D_blur_x",
+            "preview": "2d",
+            "fields": [
+                {
+                    "id": "source",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "source",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Source"
+                },
+                {
+                    "id": "direction",
+                    "maximum": 1,
+                    "kind": "Vector2",
+                    "initial": [
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "direction",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": -1,
+                    "filter": "Linear",
+                    "label": "Direction"
+                },
+                {
+                    "id": "radius",
+                    "maximum": 12,
+                    "kind": "Scalar",
+                    "initial": [
+                        3,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "radius",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Radius"
+                },
+                {
+                    "id": "history",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "history",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "History"
+                },
+                {
+                    "id": "retention",
+                    "maximum": 0.99,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.82,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "retention",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Retention"
+                },
+                {
+                    "id": "strength",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.65,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "strength",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Strength"
+                },
+                {
+                    "id": "hue",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.15,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "hue",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Hue"
+                },
+                {
+                    "id": "speed",
+                    "maximum": 5,
+                    "kind": "Scalar",
+                    "initial": [
+                        2,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "speed",
+                    "step": 0.1,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Flow speed"
+                },
+                {
+                    "id": "tint",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "tint",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Tint"
+                },
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Texture"
+                }
+            ],
+            "label": "横向模糊",
+            "folder": ""
+        },
+        {
+            "name": "Trail3D_blur_y",
+            "shader": "Trail3D_blur_y",
+            "preview": "2d",
+            "fields": [
+                {
+                    "id": "source",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "source",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Source"
+                },
+                {
+                    "id": "direction",
+                    "maximum": 1,
+                    "kind": "Vector2",
+                    "initial": [
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "direction",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": -1,
+                    "filter": "Linear",
+                    "label": "Direction"
+                },
+                {
+                    "id": "radius",
+                    "maximum": 12,
+                    "kind": "Scalar",
+                    "initial": [
+                        3,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "radius",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Radius"
+                },
+                {
+                    "id": "history",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "history",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "History"
+                },
+                {
+                    "id": "retention",
+                    "maximum": 0.99,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.82,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "retention",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Retention"
+                },
+                {
+                    "id": "strength",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.65,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "strength",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Strength"
+                },
+                {
+                    "id": "hue",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.15,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "hue",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Hue"
+                },
+                {
+                    "id": "speed",
+                    "maximum": 5,
+                    "kind": "Scalar",
+                    "initial": [
+                        2,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "speed",
+                    "step": 0.1,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Flow speed"
+                },
+                {
+                    "id": "tint",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "tint",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Tint"
+                },
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Texture"
+                }
+            ],
+            "label": "纵向模糊",
+            "folder": ""
+        }
+    ]
+}

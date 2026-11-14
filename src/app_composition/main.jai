@@ -23,6 +23,7 @@ update :: () {
 shutdown :: () {
     world := F.app_get_user_data_as(World);
     print("shutdown score: %\n", world.score);
+    assert(world.score==60);
     free(world);
     F.app_set_user_data(*F.App, null);
 }
@@ -37,4 +38,6 @@ main :: () {
     F.app_run(.{application_name = "AppComposition", window_title = "JaiLib / app_composition",
         width = 320, height = 180, update_mode = F.update_mode_unlocked()});
     F.app_destroy();
+    assert(F.app_get_user_data_as(World)==null);
+    print("[app_composition] PASS\n");
 }

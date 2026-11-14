@@ -14,6 +14,8 @@ F :: #import "foster";
 R :: #import "kit/rendering/2d";
 MAT :: #import "kit/rendering/material";
 HOT :: #import "core/hotreload";
+STR :: #import "String";
+#load "../../shared/capture.jai";
 
 #load "contract.jai";
 
@@ -38,7 +40,6 @@ status: string = "starting";
 ready: bool;
 selftest: bool;
 probe_stage: int;
-original_source: string;
 tick: int;
 failed: bool;
 
@@ -65,44 +66,22 @@ build_module :: () -> bool {
     result, out, err, timed_out := PR.run_command("jaic", "-import_dir", ".", "-exe", "build/hot_build",
         "src/hotreload/build.jai", capture_and_return_output = true, timeout_ms = 60000);
     defer { if out.data != null free(out); if err.data != null free(err); }
+    _=FILE.write_entire_file("build/hotreload-build.log",tprint("%\n%",out,err));
     if timed_out {
         status = "build timed out";
         return false;
     }
     if result.type != .EXITED || result.exit_code != 0 {
-        status = tprint("build failed (%): %", result.exit_code, err);
+        status = "Build rejected; see build/hotreload-build.log";
         print("%\n", status);
         return false;
     }
-    return true;
+    return !STR.contains(out,"error[") && !STR.contains(err,"error[");
 }
 
 // 让构建器把 DLL 写到 build/hotreload-game-<n>.dll（正在运行的旧文件不能覆盖）。
 set_target :: (path: string) {
     assert(FILE.write_entire_file(DLL_TARGET, path));
-}
-
-open_module :: () -> bool {
-    if !FU.file_exists(dll_path) {
-        status = "missing dll";
-        return false;
-    }
-    library = HOT.session_library_open(dll_path);
-    if library == null {
-        status = "open failed";
-        return false;
-    }
-    update_sym := HOT.session_library_symbol(library, "game_update");
-    version_sym := HOT.session_library_symbol(library, "game_version");
-    if update_sym == null || version_sym == null {
-        status = "missing export";
-        HOT.session_library_close(library);
-        library = null;
-        return false;
-    }
-    update_fn = cast(Game_Update) update_sym;
-    version_fn = cast(Game_Version) version_sym;
-    return true;
 }
 
 close_module :: () {
@@ -114,23 +93,34 @@ close_module :: () {
 }
 
 // 编译 + 换模块；失败时保留旧模块（正在跑的版本不受影响）。
-reload_module :: () -> bool {
-    next_index += 1;
-    old_path := dll_path;
-    dll_path = tprint("%-%.dll", DLL_PREFIX, next_index);
-    set_target(dll_path);
-    if !build_module() {
-        dll_path = old_path;   // 失败保留旧模块，输出名也回退
-        return false;
+reload_module :: (failure_probe:int=0) -> bool {
+    next_index+=1;
+    candidate_path:=copy_string(tprint("%-%-%.dll",DLL_PREFIX,ifx selftest then "probe" else "live",next_index));
+    source:=FILE.get_absolute_path(SOURCE_PATH); defer free(source.data);
+    if failure_probe>0 {
+        free(source.data);
+        source=FILE.get_absolute_path("build/hotreload-probe.jai");
+        assert(FILE.write_entire_file(source,ifx failure_probe==1 then "main :: () { undefined_build_probe(); }" else "main :: () {}"));
     }
-    close_module();
-    if !open_module() return false;
-    if old_path.data != null && FU.file_exists(old_path) FILE.file_delete(old_path);
-    reloads += 1;
-    state.reloads = reloads;
-    print("hotreload: loaded version % (reload %)\n", version_fn(), reloads);
-    status = tprint("version %", version_fn());
-    return true;
+    assert(FILE.write_entire_file("build/hotreload-source.txt",source));
+    set_target(candidate_path); _=FILE.file_delete(candidate_path);
+    if !build_module() || !FU.file_exists(candidate_path) {
+        status="Compile failed; previous module remains active"; free(candidate_path.data); return false;
+    }
+    candidate:=HOT.session_library_open(candidate_path);
+    if candidate==null { status="Load failed; previous module remains active"; free(candidate_path.data); return false; }
+    next_update:=cast(Game_Update)HOT.session_library_symbol(candidate,"game_update");
+    next_version:=cast(Game_Version)HOT.session_library_symbol(candidate,"game_version");
+    if next_update==null || next_version==null {
+        HOT.session_library_close(candidate); _=FILE.file_delete(candidate_path); free(candidate_path.data);
+        status="Missing exports; previous module remains active"; return false;
+    }
+    old_path:=dll_path;
+    close_module(); library=candidate; dll_path=candidate_path; update_fn=next_update; version_fn=next_version;
+    if old_path.count>0 { _=FILE.file_delete(old_path); free(old_path.data); }
+    reloads+=1; state.reloads=reloads;
+    print("hotreload: loaded version % (reload %)\n",version_fn(),reloads);
+    status=tprint("version %",version_fn()); return true;
 }
 
 startup :: () {
@@ -140,21 +130,15 @@ startup :: () {
     _ = F.defaults_msdf_material(F.App.device);
     reason := R.init(*renderer, *materials);
     if reason != "" { print("%\n", reason); failed = true; F.app_exit(); return; }
-    state.radius = 120;
-    _, source_hash, ok := read_source(SOURCE_PATH);
-    if !ok { print("hotreload: game source missing\n"); failed = true; F.app_exit(); return; }
-    dll_path = tprint("%-%.dll", DLL_PREFIX, 0);
-    set_target(dll_path);
-    if !open_module() {
-        if !reload_module() { print("hotreload: cannot start module\n"); failed = true; F.app_exit(); return; }
-    } else {
-        status = tprint("version %", version_fn());
-    }
+    state.x=200; state.y=200;
+    text,hash,ok:=read_source(SOURCE_PATH);
+    if !ok { failed=true; F.app_exit(); return; } source_hash=hash; free(text.data);
+    if !reload_module() { print("hotreload: cannot start module\n"); failed=true; F.app_exit(); return; }
     ready = true;
 }
 
 shutdown :: () {
-    close_module();
+    close_module(); free(dll_path.data);
     if ready { R.dispose(*renderer); MAT.material_library_dispose(*materials); }
 }
 
@@ -163,11 +147,19 @@ update :: () {
     if F.keyboard_pressed(F.input_keyboard(F.App.input), .ESCAPE) F.app_exit();
     tick += 1;
     dt := cast(float32) min(cast(float64) (F.App.time.elapsed - F.App.time.previous), 0.05);
+    keys:=F.input_keyboard(F.App.input);
+    state.move_x=0; state.move_y=0;
+    if F.keyboard_down(keys,.D) || F.keyboard_down(keys,.RIGHT) state.move_x+=1;
+    if F.keyboard_down(keys,.A) || F.keyboard_down(keys,.LEFT) state.move_x-=1;
+    if F.keyboard_down(keys,.S) || F.keyboard_down(keys,.DOWN) state.move_y+=1;
+    if F.keyboard_down(keys,.W) || F.keyboard_down(keys,.UP) state.move_y-=1;
+    if selftest { state.move_x=1; dt=1.0/60; }
     if update_fn != null update_fn(*state, dt);
+    if F.keyboard_pressed(keys,.F5) _=reload_module();
 
     // 每 10 帧看一次源码指纹（真实编辑器保存后会立刻命中）。
     if tick % 10 == 0 {
-        _, hash, ok := read_source(SOURCE_PATH);
+        text, hash, ok := read_source(SOURCE_PATH); defer free(text.data);
         if ok && hash != source_hash {
             source_hash = hash;
             reload_module();
@@ -175,26 +167,18 @@ update :: () {
     }
 
     if !selftest return;
-    // 自检：跑起来之后改一次源码，验证「重编 → 换模块 → 状态还在」。
-    if probe_stage == 0 && tick == 40 {
-        text, _, ok := read_source(SOURCE_PATH);
-        if !ok { failed = true; }
-        original_source = copy_string(text);
-        appended := tprint("%\n// reload probe\n", text);
-        FILE.write_entire_file(SOURCE_PATH, appended);   // 触发重建
-        probe_stage = 1;
-        print("hotreload: touched source, waiting for rebuild\n");
-    } else if probe_stage == 1 && reloads >= 1 {
-        // 恢复源文件，避免自检弄脏仓库；恢复本身还会触发一次重建，属正常。
-        FILE.write_entire_file(SOURCE_PATH, original_source);
-        probe_stage = 2;
-        print("HOTRELOAD SMOKE PASS: rebuilt and swapped while state survived (frames %)\n", state.frames);
-        F.app_exit();
-    } else if probe_stage == 1 && tick > 600 {
-        print("HOTRELOAD SMOKE FAIL: no reload after source change\n");
-        failed = true;
-        F.app_exit();
+    if tick==40 {
+        before:=state; count:=reloads;
+        assert(reload_module()); assert(reloads==count+1 && state.frames==before.frames && state.x==before.x && state.trail_head==before.trail_head);
+        handle:=library; callback:=update_fn; count=reloads;
+        assert(!reload_module(1)); assert(library==handle && update_fn==callback && reloads==count);
+        assert(!reload_module(2)); assert(library==handle && update_fn==callback && reloads==count);
+        update_fn(*state,1.0/60); assert(state.frames==before.frames+1 && state.x>before.x);
+        assert(reload_module()); assert(state.trail_count==24);
+        probe_stage=2;
+        print("HOTRELOAD SMOKE PASS: successful swap, compile failure, missing export, state and trail preserved\n");
     }
+
 }
 
 render :: () {
@@ -203,10 +187,16 @@ render :: () {
     F.graphics_device_clear_color(F.App.device, target, .{ 18, 22, 30, 255 });
     R.reset(*renderer);
     R.push_matrix(*renderer, F.Matrix3x2_Identity);
-    // 状态在宿主里，换模块后不会重置：方块继续沿轨道走。
-    _ = R.rect(*renderer, .{ state.x - 24, state.y - 24, 48, 48 }, .{ 219, 175, 89, 255 });
+    // The host retains movement and trail history across a module swap.
+    for i:0..state.trail_count-1 {
+        at:=(state.trail_head-state.trail_count+i+24)%24;
+        color:=F.color_premultiply(.{state.color[0],state.color[1],state.color[2],cast(u8)(40+100*i/24)});
+        _=R.rect(*renderer,.{state.trail_x[at],state.trail_y[at],state.size,state.size},color);
+    }
+    _=R.rect(*renderer,.{state.x,state.y,state.size,state.size},.{state.color[0],state.color[1],state.color[2],255});
     _ = R.rect(*renderer, .{ 24, 24, 24 + 36 * cast(float32) min(reloads, 10), 12 }, .{ 61, 117, 126, 255 });
     _ = R.submit(*renderer, R.View.{ target = target });
+    if selftest && probe_stage==2 { capture_window("hotreload"); F.app_exit(); }
 }
 
 main :: () {

@@ -1,0 +1,46 @@
+// 本示例专用：固定方向光与半球环境光，不依赖其他示例的材质或资源。
+Shader "SceneNotes"
+{
+	Label "场景批注 / 固体表面"
+	Preview 3D
+	Output "color"
+	Properties
+	{
+		_color ("颜色", Color) = (0.7, 0.7, 0.7, 1)
+	}
+	Pass "body"
+	{
+		Draw Model
+		Cull Back
+		Blend Opaque
+		ZTest Less
+		ZWrite On
+		HLSLPROGRAM
+		#include "olib/model.hlsli"
+		struct Input {
+			float3 Position : TEXCOORD0;
+			float3 Normal : TEXCOORD1;
+			float2 Uv : TEXCOORD2;
+			float4 Tangent : TEXCOORD3;
+		};
+		struct Output {
+			float4 Position : SV_Position;
+			float3 Normal : TEXCOORD0;
+		};
+		Output vertex_main(Input v)
+		{
+			Output o;
+			o.Position = mul(float4(v.Position, 1), Wvp);
+			o.Normal = mul(v.Normal, (float3x3)World);
+			return o;
+		}
+		float4 fragment_main(Output v) : SV_Target0
+		{
+			float3 n = normalize(v.Normal);
+			float sun = saturate(dot(n, normalize(float3(-0.45, 0.8, 0.55))));
+			float sky = 0.5 + 0.5 * n.y;
+			return float4(_color.rgb * (0.35 + 0.25 * sky + 0.6 * sun), 1);
+		}
+		ENDHLSL
+	}
+}

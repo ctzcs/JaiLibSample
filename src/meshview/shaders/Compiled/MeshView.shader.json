@@ -1,0 +1,77 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": false,
+        "output": "color",
+        "name": "MeshView",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "body",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "MeshView_body",
+                "draw": "Model",
+                "state": {
+                    "cull": "Back",
+                    "depth": "Less",
+                    "depth_write": "On",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Body"
+            }
+        ],
+        "label": "meshview / Surface"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "MeshView_body",
+            "shader": "MeshView_body",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "color",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.42,
+                        0.47,
+                        0.55,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "color",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Color"
+                }
+            ],
+            "label": "Body",
+            "folder": ""
+        }
+    ]
+}

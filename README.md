@@ -2,10 +2,10 @@
 
 A collection of samples for validating the adjacent `JaiLib` checkout, following
 the `src/<sample>/` layout used by `olib_sample`.
-The migrated samples are `ui_gallery`, `game_ui`, `ui_motion`, `book_ui`, `gizmo2d`,
-`material2d`, `cjk_ui`, `hotreload`, `basic`, `batcher`, `app_composition`, `calc`,
-`spatial`, `feature`, and `backend`.
-The remaining `olib_sample` examples and their status are listed at the end.
+All 23 `olib_sample` examples now have runnable Jai implementations, alongside
+the additional `cjk_ui` sample. The ports reproduce the main rendering, editing,
+animation, and networking workflows; platform-specific differences and validation
+limits are recorded below.
 
 ## Run in Zed
 
@@ -36,7 +36,7 @@ jacket run -exe build/book_ui src/book_ui/main.jai
 jacket run -exe build/gizmo2d src/gizmo2d/main.jai
 jacket run -exe build/material2d src/material2d/main.jai
 jacket run -exe build/cjk_ui src/cjk_ui/main.jai -- cjk
-jacket run -exe build/hotreload src/hotreload/main.jai            # 保存 game/game.jai 即换模块
+jacket run -exe build/hotreload src/hotreload/main.jai            # Save game/game.jai to reload
 jacket run -exe build/hotreload src/hotreload/main.jai -- selftest
 jacket run -exe build/basic src/basic/main.jai
 jacket run -exe build/batcher src/batcher/main.jai
@@ -45,18 +45,58 @@ jacket run -exe build/calc src/calc/main.jai
 jacket run -exe build/spatial src/spatial/main.jai
 jacket run -exe build/feature src/feature/main.jai
 jacket run -exe build/backend src/backend/main.jai
+jacket run -exe build/material3d src/material3d/main.jai
+jacket run -exe build/meshview src/meshview/main.jai
+jacket run -exe build/forward3d src/forward3d/main.jai
+jacket run -exe build/stylized3d src/stylized3d/main.jai
+jacket run -exe build/net_arena src/net_arena/main.jai
+jacket run -exe build/net_fps src/net_fps/main.jai
+jacket run -exe build/scene_notes src/scene_notes/main.jai
+jacket run -exe build/shader_lab src/shader_lab/main.jai
+jacket run -exe build/tween_preview src/tween_preview/main.jai
 ```
 
 Arguments after `--` are passed to the sample. See the
 [Jacket CLI documentation](https://github.com/matteopolak/jacket/blob/main/docs/tools/jacket.md)
 for command syntax.
 
-The current jfoster native library bindings load dependencies directly. Building
-and running in a fresh output directory has been verified without copying DLLs
-in advance. Fonts use jfoster's embedded resources; the game_ui button skin and
+For the network arena and editor tools, the Zed tasks use a launcher that builds
+and stages the paired runtime DLLs automatically:
+
+```sh
+python tools/run_sample.py net_arena
+python tools/run_sample.py shader_lab
+```
+
+For direct `jacket`/`jaic` commands, stage native dependencies for a new output
+directory and after updating JaiLib's native libraries:
+`python tools/stage_runtime.py build`. This copies SDL3, stb and ImGui DLLs beside
+the executables; a missing stb DLL can otherwise make a font sample exit before
+printing anything. The automated sample checker stages its own output directory.
+Latin UI fonts use Foster's embedded resources; the game_ui button skin and
 book_ui precompiled shaders are included in the repository and require no
-downloads. The embedded Roboto font provides Latin glyphs, so sample text is in
-English.
+downloads. The default Roboto font provides Latin glyphs, so most sample text is in
+English. The three ImGui tools use JaiLib's bundled Noto font with
+explicit CJK glyph ranges. Their live compilation features require `jaic` on PATH.
+Shader Lab compilation additionally requires `shadercross` and `dxc` on PATH;
+the checked-in shaders allow the other rendering samples to run without them.
+
+Player-facing menus and HUDs use **`kit/ui` (Clay)**, including `net_fps`,
+`net_arena`, and `stylized3d`. Their scenes fill the game window and the HUD is
+composited at the final output resolution. ImGui is reserved for the editor tools
+(`scene_notes`, `shader_lab`, and `tween_preview`).
+These tools share the reference blue-gray ImGui theme, bundled Noto typeface,
+system-DPI scaling and matching icon-button spacing. Shader Lab uses a real ImGui
+dockspace: drag tabs to split, merge or float panels within the window. Its initial
+layout is a 30% left control panel and a right preview; subsequent frames preserve
+user changes. JaiLib ships the matching 1.89.6 docking DLL and bindings.
+
+`net_arena` preserves the reference's neon arena, animated character faces and
+stretch, trails, spinning coins/gems, particles, score popups, hit shake, scoreboard,
+round results and animated Host/Join menu. Its presentation state is local and
+separate from replicated gameplay. Text/input use kit/Clay with the bundled MSDF
+font. The `view-test` argument captures deterministic pickup, hit, dash and results
+states and checks their pixels, including translucent overlays.
 
 If the linker reports LNK1104 because it cannot open a sample executable, close
 any running instance of that sample before trying again.
@@ -70,9 +110,9 @@ any running instance of that sample before trying again.
 | `ui_motion` | Card dragging, action slot swapping, hand sorting, tween animations, and a reward dialog; click or Enter to enqueue, GO to execute, Esc to cancel |
 | `book_ui` | Interactive six-page 3D book, curved two-sided page turns, depth occlusion, and ray picking; Left/Right to turn pages, Space to pause, right-drag to rotate, Shift+right-drag to roll, middle-drag to pan, mouse wheel to zoom, R to reset |
 | `gizmo2d` | Three viewports of 2D transform gizmos (move/rotate/scale) over the same three-object session; drag handles, arrows pan, Q/E rotate camera, Z/X zoom, R reset, Ctrl+Z/Y undo/redo; `shot` runs scripted input checks |
-| `material2d` | 12 sprites sharing one two-pass material (shadow + body): pass grouping by `pass_id` or by Render2D, per-instance `hue` for the right half, camera pan/zoom, perf overlay; `swarm` switches to a resident `Sprite_Buffer` (default 1,000,000 sprites, `count=N` to resize) drawn in one instanced call; `shot` renders offscreen, `auto` lets Render2D group passes, `vulkan` picks the Vulkan driver |
-| `cjk_ui` | Chinese text through `kit/ui`: the same Clay panel rendered with two fonts. `-- cjk` registers `shared/msdf_font/ui.json` + `ui.png` (Noto Sans CJK SC subset, msdf-atlas-gen 1.4, ASCII + sample Chinese vocabulary); omitting it falls back to the embedded Roboto atlas, which has no CJK glyphs |
-| `hotreload` | Window/Render2D stay in the host; the game logic lives in `src/hotreload/game/game.jai` and is built into `build/hotreload-game-<n>.dll`. Saving the source rebuilds it (through `src/hotreload/build.jai`, which uses the Compiler metaprogramming API) and swaps the module while game state survives. `-- selftest` edits the source, waits for the rebuild, and asserts the new module is live |
+| `material2d` | 12 sprites sharing one two-pass material (shadow + body): pass grouping by `pass_id` or by Render2D, per-instance `hue` for the right half, camera pan/zoom; P toggles the FPS/frame-time overlay. `swarm` switches to a resident `Sprite_Buffer` (default 1,000,000 sprites, `count=N` to resize) drawn in one instanced call; `shot` captures the scene and performance overlay, `scaled` renders the overlay at 125%, `auto` lets Render2D group passes, `vulkan` picks the Vulkan driver |
+| `cjk_ui` | Chinese text through kit/ui using the embedded JaiLib Noto MSDF atlas by default (509 glyphs). Use `-- roboto` for an explicit Latin-font comparison; `-- cjk` remains compatible |
+| `hotreload` | WASD/arrows move a square with a 24-position trail. Saving `game/game.jai` or pressing F5 rebuilds the DLL while position and trail survive. `selftest` verifies successful replacement, compile failure and missing-export fallback using isolated test sources |
 | `basic` | Lowest-level foster sample: hand-built quad mesh, 1×1 white texture, offscreen target, and two draw commands |
 | `batcher` | Direct `foster.Batcher` shapes (rect, circle, line) drawn to the window |
 | `app_composition` | Application/user-data split: heap state attached to `App`, 60-frame lifetime, shutdown report |
@@ -80,6 +120,15 @@ any running instance of that sample before trying again.
 | `spatial` | `foster/spatial`: point/rect/line/circle/polygon math, transforms, cardinal points, QOI check |
 | `feature` | `foster` image pipeline: packer pages, QOI/PNG encode–decode round trips |
 | `backend` | `stb_truetype` font backend: metrics, glyph lookup, rasterized coverage bitmap |
+| `material3d` | Two-pass outlined spheres, separate material values, grouped passes, secondary camera, MSAA, resident and automatic instancing; Space toggles outlines, G grouping, V second view, I swarm, R material reload, P performance overlay |
+| `meshview` | Procedural mesh or a `.dasset` input, QEM simplification, on-screen topology statistics, solid/wire/x-ray display; A/S or Left/Right change detail, W wire, M solid, X x-ray, F fits the model bounds |
+| `forward3d` | Forward lighting with directional, point, and spot lights; textured material uniforms, metallic/roughness values, depth-tested opaque objects and sorted transparent objects |
+| `stylized3d` | Low-resolution meadow with shadows, water reflection, ambient occlusion, outlines, minimap, animated decorative coins, collision, and a third-person controller; WASD move, Shift sprint, Space jump, right-drag orbit, wheel zoom, R reset, P/O/E/L render toggles |
+| `net_arena` | Authoritative multiplayer coin arena with prediction/rollback, bots, dash, scoring, rounds, UDP and ENet; WASD move, Space dash; host/join from the menu or CLI |
+| `net_fps` | Multiplayer FPS with predicted movement, server hit validation/rewind, bots, health, respawn, scoreboard and optional spatial voice; WASD move, mouse aim, left-click fire, Space jump, Tab scoreboard, V push-to-talk, Esc releases the mouse |
+| `scene_notes` | Pick world positions, edit UTF-8 notes, focus the camera, show resolved notes, undo/redo, reload, and transactional saves with external-change detection; left-click places/selects notes, right-drag orbits, wheel zooms |
+| `shader_lab` | Live shader compilation and material parameters, 2D/3D previews, trail feedback, texture selection, material save/load, and Chinese labels; file requests use an in-app path dialog |
+| `tween_preview` | Fly-in, spring, and hover cases; timeline seeking, parameter overrides, trace plots, two targets, and real DLL reload that preserves the current bookmark; Space play/pause, R restart, S playback speed |
 
 The game_ui volume and music controls, and book_ui spell and item interactions,
 only update demo state in memory. There is no audio playback or save system.
@@ -112,6 +161,12 @@ only update demo state in memory. There is no audio playback or save system.
 | `src/game_ui/` | Scene, HUD, and button skin |
 | `src/ui_motion/` | Card state, drag and drop, tweening, and UI |
 | `src/book_ui/` | Page UI, page meshes, camera, ray picking, 3D rendering, and shaders |
+| `shared/scene3d.jai`, `shared/geometry3d.jai` | 3D host, orbit camera, targets, screenshots, and reusable geometry |
+| `shared/tool_host.jai` | Foster/ImGui host, CJK font setup, scaling, and tool smoke captures |
+| `shared/game_host.jai`, `shared/network_menu.jai` | Clay game HUD/menu host, MSDF text, input capture, and shared connection form |
+| `src/net_arena/`, `src/net_fps/` | Network sessions, authoritative simulation, prediction, RPCs, and game views |
+| `tools/check_samples.py` | All 24 samples, GPU/behavior regressions, per-case logs/screenshots and optional local networking |
+| `tools/build_shaders.py` | JaiLib shader extraction and SPIR-V, direct DXIL, and MSL compilation |
 
 The rendering stack is `jfoster → kit/rendering/material → kit/rendering/2d → kit/ui`.
 Controls use JaiLib's public API, and layouts use `clay.UI(..., #code {...})`.
@@ -216,43 +271,192 @@ The host then:
 2. runs `jaic` on the build script,
 3. loads the new DLL, then frees the previous one, keeping host-owned game state intact.
 
-`hotreload -- selftest` verifies the whole loop: it appends a line to the game source, waits for
-the rebuild, and prints `HOTRELOAD SMOKE PASS` once the new module is running (old DLL removed).
+`hotreload -- selftest` builds and loads real DLLs, checks successful replacement,
+then checks compiler failure and missing exports while the previous module keeps
+updating. Host position and trail history must survive every swap. Test sources
+live under `build/`; the user's game source is never edited by the self-test.
 
 ## Chinese text
 
-Two independent font paths, both verified on this machine:
+The CJK demo embeds `../JaiLib/assets/fonts/msdf/ui.json` and `ui.png` at
+compile time: 509 glyphs, 1152 x 1152 pixels, top origin, OFL license. It works
+without a special argument and from a different working directory. `-- cjk`
+also enables this font in samples using `shared/ui_sample.jai`; `-- roboto`
+selects Foster's Latin font for comparison. Other UI samples retain their
+embedded Foster Roboto default.
 
-- `kit/ui` (Clay) takes an **MSDF atlas**. `shared/msdf_font/` carries the
-  Noto Sans CJK SC subset atlas copied from `olib_sample` (512 glyphs, 1168×1168 after the
-  charset edit below), licensed OFL, `yOrigin=top`, and plugs into the existing
-  `prepare_ui_font` adapter in `src/ui_gallery/font.jai`. `cjk_ui -- cjk` proves it renders.
-  A glyph outside the charset renders blank, so the charset has to cover the UI vocabulary.
-- `r2d` text takes a runtime **bitmap** `Sprite_Font`: `font_load` a CJK TTF/OTF and pass the
-  codepoints you need (`sprite_font_create_from_font`). No offline step. Decode UTF-8 with
-  `foster.rune_iterator` / `rune_next`; iterating the string byte-by-byte builds the wrong glyphs.
+The same top-origin metric/UV adapter supports both atlases. The CJK demo's text
+is checked against the shipped charset; missing built-in assets fail explicitly.
+Its owned decoded font is released after the UI view and GPU texture.
 
-Regenerating the atlas (charset is `[32, 126]` plus `0xXXXX` lines, one codepoint per line):
+ImGui tool samples now load the shipped Noto OTF using a source-anchored path
+instead of Microsoft YaHei from Windows. `backend` and `gizmo2d` embed that OTF;
+their loader copies the bytes before transferring ownership to Foster.
+The ImGui samples therefore still need the adjacent JaiLib assets at runtime.
+If moving JaiLib, update both the import path and `shared/library_assets.jai`.
+
+The older 525-glyph `shared/msdf_font` atlas remains available as a custom
+resource, but is no longer a default dependency. Regeneration instructions and
+licenses for the active resources live in `../JaiLib/assets/fonts/msdf/README.md`.
 
 ```sh
-msdf-atlas-gen -font NotoSansCJKsc-Regular.otf -charset shared/msdf_font/charset.txt   -type msdf -format png -size 48 -pxrange 8 -yorigin top -seed 0   -imageout shared/msdf_font/ui.png -json shared/msdf_font/ui.json
+python tools/check_assets.py
 ```
 
-The generator is not vendored here; the copy used for this run is
-`../olib/build/msdf-tools/msdf-atlas-gen/msdf-atlas-gen.exe` (1.4) with the source font at
-`../olib/build/msdf-fonts/NotoSansCJKsc-Regular.otf`. The atlas PNG and JSON must stay together.
+This checks CJK vocabulary coverage, builds nine affected samples, exercises font
+rasterization and UI/Gizmo/ImGui rendering, and runs the default CJK demo from
+`build/` to verify working-directory independence. Logs are `build/asset-*.log`.
+Screenshots are in `library/screenshots`; the alternate-directory CJK run writes
+its capture to `build/library/screenshots`.
 
-## Remaining olib_sample examples
+## Running the final nine ports
 
-| Sample | Status |
-| --- | --- |
-| `tween_preview` | Host is portable now that DLL builds work (see `hotreload`), but it also needs the preview module's motion DSL ported; not started. |
-| `net_arena`, `net_fps` | Blocked: need `thirdparty/onet` and `thirdparty/voice`, which JaiLib has not translated (`docs/OLIB_PARITY.md`). |
-| `material3d` | Not ported yet: it needs the same Shader Lab artifacts (now working, see below) plus a `Render3D` model/instancing port (~550 lines with MSAA options, orbit camera, and a million-sphere swarm). |
-| `meshview`, `forward3d`, `stylized3d` | Need per-sample 3D shaders. `kit/rendering/3d` currently ships only its own embedded shader set, so these samples cannot register custom 3D materials through the public API yet. |
-| `scene_notes`, `shader_lab` | `kit/tools/scene_notes` and `kit/tools/shader_lab` are ported, but the ImGui host wiring and the Shader Lab asset set still have to be assembled in the sample. `shader_lab` also hits the manifest-registration defect above. |
+The shared 3D host supports left-drag orbit, right/middle-drag pan, wheel zoom,
+F camera reset, and Esc exit. `stylized3d` uses its own third-person camera.
+Examples (arguments follow `--` when using `jacket run`):
+
+```sh
+jacket run -exe build/material3d src/material3d/main.jai -- views samples=4
+jacket run -exe build/material3d src/material3d/main.jai -- swarm count=20000
+jacket run -exe build/material3d src/material3d/main.jai -- models each count=128
+jacket run -exe build/stylized3d src/stylized3d/main.jai -- flat noao noshadow
+jacket run -exe build/tween_preview src/tween_preview/main.jai -- -case=card/spring -target=scene/card-42
+```
+
+`material3d swarm` defaults to one million low-poly spheres; `count=N`,
+`rings=N`, and `segments=N` control the workload. `models` selects automatic
+instancing and `each` submits models individually. `samples=1/2/4/8` selects MSAA.
+`tween_preview` compiles `motion.jai` into a separate DLL, watches for source
+changes, and keeps the old module active if the replacement cannot compile or load.
+
+Both network samples accept the same connection options. Build first, then open
+separate terminals from this repository root, for example:
+
+```sh
+jacket build -exe build/net_fps src/net_fps/main.jai
+build/net_fps.exe server port=7777 enet
+build/net_fps.exe client 127.0.0.1 7777 enet
+```
+
+Use `host` for a local player and server together, `udp` or `enet` for the
+transport, `bots=N` for bots, and `lag=N` for simulated latency in milliseconds.
+The FPS voice path initializes when Opus is available: hold V to talk, `openmic`
+sends continuously, and `voicetest` supplies a test tone. Compatible Opus/RNNoise native
+libraries are needed for their respective features. Missing codecs are reported
+and do not prevent the game from running.
+
+FPS hit detection uses the authoritative eye ray. Its visible tracer starts near
+the weapon and is clipped away from the camera before its thin 3D quad is built;
+this prevents shots originating at or behind the eye from covering the viewport.
+`net_fps -- tracer-test` (arguments after `--` with Jacket; omit `--` when running
+the executable directly) checks 60 GPU frames with eye-origin, camera-crossing,
+nearly parallel, and behind-camera shots. `shot menu narrow scaled` captures the
+Clay connection form; `menu-test` exercises text editing, input isolation, the
+transport toggle, and the Host button before checking the network session.
+
+Scene Notes uses `content/editor/scene_notes.json` by default, or `notes=<path>`.
+Its smoke run uses a separate file under `build/` and leaves user notes untouched.
+Shader Lab's file dialog accepts absolute paths or paths relative to its shader
+source directory. Native OS file pickers and drag-and-drop are not wired into this
+host. The FPS weapon is drawn as a screen-space silhouette; the port does not
+include the original voice device-selection/diagnostic panels. These examples
+are functional ports, not pixel-for-pixel visual copies.
+
+### Rebuilding shaders
+
+```sh
+python tools/build_shaders.py src/shader_lab/shaders
+python tools/build_shaders.py src/stylized3d/shaders
+```
+
+The same command works with the `forward3d`, `meshview`, `net_fps`, and
+`scene_notes` shader directories. It uses JaiLib's `.oshader` parser, SDL
+`shadercross`, and DXC (`vs_6_0` / `ps_6_0`), keeping intermediate files in
+`build/shaders`. Each `Compiled/jailib-sources.json` records SHA-256 hashes of
+sources, includes, tools, and generated products. Rebuild when the corresponding
+shader sources or JaiLib shader includes change.
+
+### Additional validation and JaiLib fixes
+
+```sh
+python tools/check_samples.py
+python tools/check_samples.py --network
+```
+
+The full check discovers and builds all 24 samples with `-no_dce`, runs GPU and
+behavior checks, exercises multiple
+material submission modes and 4x MSAA, checks narrow/scaled Shader Lab, verifies
+deterministic spring seeking and successful/failed DLL replacement, tests UTF-8
+note persistence and external-write conflicts, and reads pixels after multiple
+buffer uploads in one frame. `--network` adds UDP and ENet runs with 80 ms
+simulated latency plus independent local server/client processes for both games.
+The game UI checks also cover narrow windows at 125% scale and the FPS tracer
+coverage regression. With the old tracer path restored in a temporary test build,
+the regression detects 489,402 yellow pixels; the restored world-space beam with near-eye width protection peaks at 5,120
+of 1,024,000 pixels across the same adversarial 60-frame test on D3D12.
+The performance-overlay regression checks visible text and pixel bounds for all
+four corners, 100%/125% scaling, empty/partial/full history, long scope names, and
+hidden overlays. Its reusable fixture lives in JaiLib's
+`tests/kit/tools/perf_overlay_layout/` and is run by `tools/check_samples.py`.
+It also verifies every Shader Lab shader and target, paused feedback and single
+stepping, preset save/load/cancel, an imported model away from the origin,
+straight-alpha blending, packed color bytes, QOI/PNG pixel round trips, and
+Float16/Float32 GPU values above 1. Shader Lab uses the bundled icon atlas.
+Executables, logs, `results.json` and separate screenshots for each case are under
+`build/check-samples/`, avoiding running user executables in `build/`.
+Use `--only meshview,shader_lab` to select samples or `--baseline` for default cases.
+See [the sample audit](docs/SAMPLE_AUDIT.md) for coverage and limits.
+Compiler diagnostics and explicit success markers are checked because a Jai
+compiler error or assertion can otherwise leave a zero process exit code.
+
+These checks passed on Windows/D3D12. Screenshots were also inspected for the
+3D scenes and tool windows. Vulkan/MSL outputs are included but have not been
+tested at runtime. Synthetic Opus encode/RPC/decode/playback now passes over UDP
+and ENet; the Windows runtime and license are staged automatically. Human speech,
+physical microphone switching, RNNoise, and Internet/NAT traversal remain outside
+the verified coverage. The swarm
+check uses 20,000 instances, not a million-instance performance benchmark.
+
+The ports also require fixes in the adjacent **JaiLib working tree**: render-buffer
+upload ordering, Batcher merge ranges, debug-line indices, ImGui texture handles
+and glyph ranges, Shader Lab ownership/path/font handling, shader worker option
+ownership, atomic note/preset saves, preview depth and winding, color/QOI
+correctness, and floating-point texture targets. Those library changes are separate from this
+sample repository and have not been committed here. Foster changes are recorded
+in `../JaiLib/foster/docs/LOCAL_CHANGES.md`; their pixel regression lives under
+`../JaiLib/foster/tests/upload_order/`.
 
 The gizmo2d port keeps `editor.jai` (document transactions and viewport input)
 separate from `main.jai` (host, input, and pixel drawing), matching the Odin
 sample's split. Its scripted `shot` run injects pointer input inside the render
 frame, so the editor sees press/move/release on the same frame as the script.
+
+### Reference workflow adaptations
+
+- **net_fps** now uses the reference camera-space gun, recoil, muzzle flash,
+  spread/hit/headshot reticles, damage edges, remote interpolation/hit flashes,
+  kill feed, scoreboard and orbiting spectator camera. Menu and HUD use kit/Clay.
+  The world-space tracer keeps a near-camera clip and projected-width limit.
+- **Voice:** `V` talks, `F1` opens diagnostics; with the mouse released, `M` cycles
+  inputs, `O` cycles/tests outputs, and `L` monitors the microphone. `mic <name>`
+  and `out <name>` match device names; `voicetest` generates a synthetic tone and
+  echoes it through the server. Partial microphone frames are retained, playback
+  keeps a 60 ms lead, and departed speakers are released. Diagnostics are written
+  to `build/net-fps-voice.log`. See [Opus provenance/license](assets/voice/README.md).
+- **scene_notes** restores the separate header, scene and notes panel, reference
+  camera reset, 4x MSAA and screenshot action. Captures include the composed UI,
+  use unique filenames, and populate the screenshot field of an open draft.
+- **tween_preview** accepts a Case ID and target alias in the project entry UI,
+  opens case source files, and rebuilds with `F5`. Runtime compilation is polled
+  asynchronously; the previous module keeps playing until a valid candidate is
+  ready, then replays from the start with the same selection/speed; failed
+  compilation preserves the running module.
+- **shader_lab** uses SDL native open/save dialogs and forwards owned file-drop
+  paths and coordinates to texture cards. Callback replies are applied on the
+  render thread with the original request ID; stale replies cannot select a new
+  parameter accidentally.
+
+These changes also need the adjacent JaiLib quaternion fix and audio-device API.
+The quaternion regression checks rotated basis lengths, orthogonality and the
+combined FPS aim direction; smoke tests cover asynchronous reload recovery,
+callback save/load/cancel, drop-to-texture GPU pixels and Opus network loopback.

@@ -1,0 +1,348 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": false,
+        "output": "color",
+        "name": "Outlined",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "body",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0.12,
+                        0.15,
+                        0.2,
+                        1
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Outlined_body",
+                "draw": "Model",
+                "state": {
+                    "cull": "Back",
+                    "depth": "Less",
+                    "depth_write": "On",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "本体"
+            },
+            {
+                "id": "outline",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0.12,
+                        0.15,
+                        0.2,
+                        1
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Outlined_outline",
+                "draw": "Model",
+                "state": {
+                    "cull": "Front",
+                    "depth": "Less_Equal",
+                    "depth_write": "Off",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "描边"
+            }
+        ],
+        "label": "模型材质 / 本体 + 描边"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Outlined_body",
+            "shader": "Outlined_body",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "strength",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.65,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "strength",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Strength"
+                },
+                {
+                    "id": "hue",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.15,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "hue",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Hue"
+                },
+                {
+                    "id": "speed",
+                    "maximum": 5,
+                    "kind": "Scalar",
+                    "initial": [
+                        2,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "speed",
+                    "step": 0.1,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Flow speed"
+                },
+                {
+                    "id": "tint",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "tint",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Tint"
+                },
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Texture"
+                },
+                {
+                    "id": "color",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.03,
+                        0.04,
+                        0.07,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "color",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Outline color"
+                }
+            ],
+            "label": "本体",
+            "folder": ""
+        },
+        {
+            "name": "Outlined_outline",
+            "shader": "Outlined_outline",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "strength",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.65,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "strength",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Strength"
+                },
+                {
+                    "id": "hue",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.15,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "hue",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Hue"
+                },
+                {
+                    "id": "speed",
+                    "maximum": 5,
+                    "kind": "Scalar",
+                    "initial": [
+                        2,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "speed",
+                    "step": 0.1,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Flow speed"
+                },
+                {
+                    "id": "tint",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "tint",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Tint"
+                },
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Texture"
+                },
+                {
+                    "id": "color",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.03,
+                        0.04,
+                        0.07,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "color",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Outline color"
+                }
+            ],
+            "label": "描边",
+            "folder": ""
+        }
+    ]
+}

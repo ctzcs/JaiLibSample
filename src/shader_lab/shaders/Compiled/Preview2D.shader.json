@@ -1,0 +1,161 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": false,
+        "output": "color",
+        "name": "Preview2D",
+        "skinned": false,
+        "preview": "2d",
+        "passes": [
+            {
+                "id": "main",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0.066667,
+                        0.082353,
+                        0.101961,
+                        1
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Preview2D_main",
+                "draw": "Preview_Model",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Default"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "绘制场景"
+            }
+        ],
+        "label": "流动纹理"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Preview2D_main",
+            "shader": "Preview2D_main",
+            "preview": "2d",
+            "fields": [
+                {
+                    "id": "strength",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.65,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "strength",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Strength"
+                },
+                {
+                    "id": "hue",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.15,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "hue",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Hue"
+                },
+                {
+                    "id": "speed",
+                    "maximum": 5,
+                    "kind": "Scalar",
+                    "initial": [
+                        2,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "speed",
+                    "step": 0.1,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Flow speed"
+                },
+                {
+                    "id": "tint",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "tint",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Tint"
+                },
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Texture"
+                }
+            ],
+            "label": "绘制场景",
+            "folder": ""
+        }
+    ]
+}

@@ -3,3 +3,4 @@
 *.pdb
 *.obj
 .alma-snapshots
+__pycache__/

@@ -1,0 +1,77 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": true,
+        "output": "color",
+        "name": "Blob",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "transparent",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Blob_transparent",
+                "draw": "Model",
+                "state": {
+                    "cull": "None",
+                    "depth": "Less",
+                    "depth_write": "Off",
+                    "blend": "Alpha"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Shadow"
+            }
+        ],
+        "label": "stylized3d / Blob shadow"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Blob_transparent",
+            "shader": "Blob_transparent",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "softness",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.6,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "softness",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Softness"
+                }
+            ],
+            "label": "Shadow",
+            "folder": ""
+        }
+    ]
+}

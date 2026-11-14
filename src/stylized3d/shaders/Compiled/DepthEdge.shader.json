@@ -1,0 +1,182 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": false,
+        "output": "color",
+        "name": "DepthEdge",
+        "skinned": false,
+        "preview": "2d",
+        "passes": [
+            {
+                "id": "edge",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "image",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "DepthEdge_edge",
+                "draw": "Sprite",
+                "state": {
+                    "cull": "Default",
+                    "depth": "Default",
+                    "depth_write": "Default",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Edge"
+            }
+        ],
+        "label": "stylized3d / Depth edge"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "DepthEdge_edge",
+            "shader": "DepthEdge_edge",
+            "preview": "2d",
+            "fields": [
+                {
+                    "id": "image",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "image",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Scene"
+                },
+                {
+                    "id": "depth",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "depth",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": true,
+                    "minimum": 0,
+                    "filter": "Nearest",
+                    "label": "Depth"
+                },
+                {
+                    "id": "edge",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.22,
+                        0.23,
+                        0.28,
+                        0.4
+                    ],
+                    "wrap": "Clamp",
+                    "name": "edge",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Edge color"
+                },
+                {
+                    "id": "texel",
+                    "maximum": 1,
+                    "kind": "Vector2",
+                    "initial": [
+                        0.002,
+                        0.004,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "texel",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Texel size"
+                },
+                {
+                    "id": "clip",
+                    "maximum": 1000,
+                    "kind": "Vector2",
+                    "initial": [
+                        0.1,
+                        120,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "clip",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Near / far"
+                },
+                {
+                    "id": "threshold",
+                    "maximum": 1,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.04,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "threshold",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Threshold"
+                }
+            ],
+            "label": "Edge",
+            "folder": ""
+        }
+    ]
+}

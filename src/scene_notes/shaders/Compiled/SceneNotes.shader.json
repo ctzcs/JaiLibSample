@@ -1,0 +1,77 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": false,
+        "output": "color",
+        "name": "SceneNotes",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "body",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "SceneNotes_body",
+                "draw": "Model",
+                "state": {
+                    "cull": "Back",
+                    "depth": "Less",
+                    "depth_write": "On",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": ""
+            }
+        ],
+        "label": "场景批注 / 固体表面"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "SceneNotes_body",
+            "shader": "SceneNotes_body",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "color",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.7,
+                        0.7,
+                        0.7,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "color",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "颜色"
+                }
+            ],
+            "label": "",
+            "folder": ""
+        }
+    ]
+}

@@ -21,7 +21,8 @@ TARGET_FILE :: "../../build/hotreload-target.txt";
     options.append_executable_filename_extension = false;
     // 模块只用 Basic 和相对 #load，不需要额外 import_dir。
     C.set_build_options(options, w);
-    C.add_build_file("game/game.jai", w);
+    source, source_ok := FILE.read_entire_file("../../build/hotreload-source.txt");
+    C.add_build_file(ifx source_ok then trim_newline(source) else "game/game.jai", w);
 
     failed := false;
     C.compiler_begin_intercept(w);

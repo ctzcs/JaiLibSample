@@ -5,15 +5,22 @@ using M;
 F :: #import "foster";
 
 main :: () {
+    assert(F.point2_length(.{3,4})==5);
+    assert(F.color_rgba(F.Color_Red)==0xff0000ff);
+    assert(F.color_rgba(.{0x12,0x34,0x56,0x78})==0x12345678);
+    assert(F.color_abgr(.{0x12,0x34,0x56,0x78})==0x78563412);
+    assert(F.color_from_rgba(0x12345678)==F.Color.{0x12,0x34,0x56,0x78});
     print("point length: %\n", F.point2_length(.{ 3, 4 }));
 
     r := F.Rect_Int.{ 0, 0, 10, 10 };
     print("contains: %\n", F.rect_int_contains_point(r, .{ 4, 4 }));
     overlap_rect := F.rect_int_get_intersection(r, F.Rect_Int.{ 5, 5, 10, 10 });
     print("intersection area: %\n", overlap_rect.w * overlap_rect.h);
+    assert(overlap_rect.w*overlap_rect.h==25);
 
     hit, at := F.line_intersects_line(.{ 0, 0 }, .{ 10, 10 }, .{ 0, 10 }, .{ 10, 0 });
     print("line intersection: % at (%, %)\n", hit, at.x, at.y);
+    assert(hit && at.x==5 && at.y==5);
 
     print("cardinal point: (%, %)\n", F.cardinal_point(.LEFT).x, F.cardinal_point(.LEFT).y);
 
@@ -25,6 +32,7 @@ main :: () {
     transform := F.Transform.{ position = .{ 10, 20 }, scale = .{ 2, 2 }, rotation = 0 };
     moved := F.transform_apply(transform, .{ 1, 1 });
     print("transform: (%, %)\n", moved.x, moved.y);
+    assert(moved.x==12 && moved.y==22);
 
     print("red rgba: % format size: % key: %\n", F.color_rgba(F.Color_Red),
         F.texture_format_size(.COLOR), F.Keys.A);
@@ -37,9 +45,12 @@ main :: () {
     F.polygon_add(*poly, .{ 10, 10 });
     F.polygon_add(*poly, .{ 0, 10 });
     print("polygon: % %\n", F.polygon_contains(*poly, .{ 5, 5 }), F.polygon_area(*poly));
+    assert(F.polygon_contains(*poly,.{5,5}) && F.polygon_area(*poly)==100);
     F.polygon_destroy(*poly);
 
     rng := F.rng_create(123);
     print("rng: % %\n", F.rng_range_i(*rng, 0, 10), F.rng_chance(*rng, 1));
     print("qoi header: %\n", F.qoi_is_format(cast([] u8) "qoif"));
+    assert(F.qoi_is_format(cast([] u8)"qoif"));
+    print("[spatial] PASS\n");
 }

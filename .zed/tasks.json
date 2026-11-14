@@ -194,5 +194,112 @@
     "cwd": "$ZED_WORKTREE_ROOT",
     "allow_concurrent_runs": false,
     "reveal": "always"
+  },
+  {
+    "label": "material3d",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/material3d",
+      "src/material3d/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "meshview",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/meshview",
+      "src/meshview/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "forward3d",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/forward3d",
+      "src/forward3d/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "stylized3d",
+    "command": "jacket",
+    "args": [
+      "run",
+      "-exe",
+      "build/stylized3d",
+      "src/stylized3d/main.jai"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "net_arena",
+    "command": "python",
+    "args": [
+      "tools/run_sample.py",
+      "net_arena"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "net_fps",
+    "command": "python",
+    "args": [
+      "tools/run_sample.py",
+      "net_fps"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "scene_notes",
+    "command": "python",
+    "args": [
+      "tools/run_sample.py",
+      "scene_notes"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "shader_lab",
+    "command": "python",
+    "args": [
+      "tools/run_sample.py",
+      "shader_lab"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "tween_preview",
+    "command": "python",
+    "args": [
+      "tools/run_sample.py",
+      "tween_preview"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always"
   }
 ]

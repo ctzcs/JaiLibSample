@@ -21,6 +21,8 @@ main :: () {
     qoi := F.image_encode_qoi(page);
     print("qoi: % bytes, header ok: %\n", qoi.count, F.qoi_is_format(qoi));
     decoded_qoi := F.qoi_decode(qoi);
+    assert(decoded_qoi.Width==page.Width && decoded_qoi.Height==page.Height);
+    for pixel,i:page.Data assert(pixel==decoded_qoi.Data[i]);
     print("qoi roundtrip size: %x%, pixel(1,1) alpha: %\n", decoded_qoi.Width,
         decoded_qoi.Height, F.image_pixel(*decoded_qoi, 1, 1).a);
     F.image_destroy(*decoded_qoi);
@@ -28,6 +30,8 @@ main :: () {
 
     png := F.image_encode_png(page);
     decoded_png := F.image_decode(png);
+    assert(decoded_png.Width==page.Width && decoded_png.Height==page.Height);
+    for pixel,i:page.Data assert(pixel==decoded_png.Data[i]);
     print("png: % bytes, roundtrip size: %x%\n", png.count, decoded_png.Width, decoded_png.Height);
     F.image_destroy(*decoded_png);
     free(png.data);
@@ -35,4 +39,11 @@ main :: () {
     F.packer_destroy(*packer);
     F.image_destroy(*img);
     F.image_destroy(*img2);
+    // Exercise multi-byte QOI dimensions; tiny atlas fixtures miss byte truncation.
+    large:=F.image_create(513,257,F.Color.{18,52,86,120});
+    encoded:=F.image_encode_qoi(large); decoded:=F.qoi_decode(encoded);
+    assert(decoded.Width==513 && decoded.Height==257);
+    for pixel,i:large.Data assert(pixel==decoded.Data[i]);
+    F.image_destroy(*large); F.image_destroy(*decoded); free(encoded.data);
+    print("[feature] PASS\n");
 }

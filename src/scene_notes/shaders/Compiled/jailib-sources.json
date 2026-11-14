@@ -1,0 +1,28 @@
+{
+  "policy": "jailib-sample-shaders-1:vertex_main,fragment_main;spv;dxil=direct;msl",
+  "dxil": "direct",
+  "sources": {
+    "SceneNotes.oshader": "b63438c0b9228d530091396a648dbb2b5b0bcdb6383b42c8c028d09ee126196a",
+    "@include/olib/fullscreen.hlsli": "2f1aedead8b67e772ee55e6782d8a506dc092a63f56d448320c20bdbda4eacd3",
+    "@include/olib/instance.hlsli": "75655bbced095059c100e911c56560a6a243e2ad2d01f2f68c96d32baaf1088a",
+    "@include/olib/model.hlsli": "0a5a28e0c73195a0feff1dd1b7c2048cee5c510d9e3efc990a2db0066c907b1f",
+    "@include/olib/skinning.hlsli": "6c451a7456a664cc08f196a66b59933dfdc151dca8840a0aae776a508eb9987d",
+    "@include/olib/sprite.hlsli": "ca67b3050e456a5835368cdf56772a4c0b97c22495848923133aefda3184c048",
+    "@include/olib/sprite_vertex.hlsli": "1244684fc41a0a76e2ea9384e6daeb6026ff7b2e9f062e9548195384ea5e676a",
+    "@tool/build_shaders.py": "c1909f1c4e036b3e450c381a3533ca56d51c8ca8099d86ded1177a0bab4f087b",
+    "@tool/main.jai": "893bb30b4eedb8ba3da4b94969c865864aa2de076ac76b208e8f4ede39fefa4e"
+  },
+  "tools": {
+    "shadercross.EXE": "bbff1debc13baa72b00bdc4415ab5be8faba05dc5027294e181852840d1fa434",
+    "dxc.EXE": "b05bc2ba3355fda065f1b39fa3b1aa6d87689a84a290e5f201c5b6efcce6cab8"
+  },
+  "outputs": {
+    "SceneNotes.shader.json": "25301c8b285c7110c270a5807a2c5810802ddc520d6c7411e739db49865fb136",
+    "SceneNotes_body.fragment.dxil": "d607a752c653a32286fdfb5c26a3a8e3e169a57e4047ed06ac42796221dbdbb1",
+    "SceneNotes_body.fragment.msl": "99d2fea8cdaa429938bc1a3beb82a0eb1bdeb65999b3b58b46e9fe3710f9d237",
+    "SceneNotes_body.fragment.spv": "9911d2bd58faea7824007a7c3f7839b87ab4bd407039258567a2fb5ec99aa16a",
+    "SceneNotes_body.vertex.dxil": "6ef1bf08d236308374e375d6335d497cea636c6e37359a37d10d6ea1eaa077ca",
+    "SceneNotes_body.vertex.msl": "7ac2793e07ecfae0b92692b90d2e77e01bd64451135bafd769f7ffbe430e784e",
+    "SceneNotes_body.vertex.spv": "51c1777db1e1ed3ba40c75838a70ad19bd964449160f6d60dbbc75e3470f25bf"
+  }
+}

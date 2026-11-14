@@ -1,0 +1,77 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": true,
+        "output": "color",
+        "name": "Billboard",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "transparent",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Billboard_transparent",
+                "draw": "Model",
+                "state": {
+                    "cull": "None",
+                    "depth": "Less",
+                    "depth_write": "Off",
+                    "blend": "Alpha"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Card"
+            }
+        ],
+        "label": "stylized3d / Billboard"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Billboard_transparent",
+            "shader": "Billboard_transparent",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "shine",
+                    "maximum": 2,
+                    "kind": "Scalar",
+                    "initial": [
+                        0.6,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "shine",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Shine"
+                }
+            ],
+            "label": "Card",
+            "folder": ""
+        }
+    ]
+}

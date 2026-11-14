@@ -1,0 +1,98 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": false,
+        "output": "color",
+        "name": "Sky",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "sky",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Sky_sky",
+                "draw": "Model",
+                "state": {
+                    "cull": "Front",
+                    "depth": "Off",
+                    "depth_write": "Off",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Sky"
+            }
+        ],
+        "label": "stylized3d / Sky"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Sky_sky",
+            "shader": "Sky_sky",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "zenith",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.35,
+                        0.62,
+                        0.73,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "zenith",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Zenith"
+                },
+                {
+                    "id": "horizon",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.91,
+                        0.89,
+                        0.73,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "horizon",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Horizon"
+                }
+            ],
+            "label": "Sky",
+            "folder": ""
+        }
+    ]
+}

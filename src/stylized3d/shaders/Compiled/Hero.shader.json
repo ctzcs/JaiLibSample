@@ -1,0 +1,222 @@
+{
+    "effect": {
+        "uniforms": "Olib",
+        "instanced": true,
+        "output": "color",
+        "name": "Hero",
+        "skinned": false,
+        "preview": "3d",
+        "passes": [
+            {
+                "id": "silhouette",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Hero_silhouette",
+                "draw": "Model",
+                "state": {
+                    "cull": "Back",
+                    "depth": "Greater",
+                    "depth_write": "Off",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Silhouette"
+            },
+            {
+                "id": "body",
+                "output": "color",
+                "disabled": false,
+                "sprite_texture": "",
+                "target": {
+                    "height": 0,
+                    "clear": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "depth": false,
+                    "scale": 0,
+                    "format": "Color",
+                    "samples": 0,
+                    "width": 0
+                },
+                "params": "Hero_body",
+                "draw": "Model",
+                "state": {
+                    "cull": "Back",
+                    "depth": "Less",
+                    "depth_write": "On",
+                    "blend": "Opaque"
+                },
+                "inputs": [],
+                "values": [],
+                "label": "Body"
+            }
+        ],
+        "label": "stylized3d / Hero"
+    },
+    "version": 2,
+    "schemas": [
+        {
+            "name": "Hero_silhouette",
+            "shader": "Hero_silhouette",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "color",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "color",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Color"
+                },
+                {
+                    "id": "silhouette",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.48,
+                        0.84,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "silhouette",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Silhouette"
+                },
+                {
+                    "id": "sunDepth",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "sunDepth",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": true,
+                    "minimum": 0,
+                    "filter": "Nearest",
+                    "label": "Sun shadow"
+                }
+            ],
+            "label": "Silhouette",
+            "folder": ""
+        },
+        {
+            "name": "Hero_body",
+            "shader": "Hero_body",
+            "preview": "3d",
+            "fields": [
+                {
+                    "id": "color",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "color",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Color"
+                },
+                {
+                    "id": "silhouette",
+                    "maximum": 1,
+                    "kind": "Color",
+                    "initial": [
+                        0.48,
+                        0.84,
+                        1,
+                        1
+                    ],
+                    "wrap": "Clamp",
+                    "name": "silhouette",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": false,
+                    "minimum": 0,
+                    "filter": "Linear",
+                    "label": "Silhouette"
+                },
+                {
+                    "id": "sunDepth",
+                    "maximum": 1,
+                    "kind": "Texture",
+                    "initial": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "wrap": "Clamp",
+                    "name": "sunDepth",
+                    "step": 0.01,
+                    "instance": false,
+                    "texture": "",
+                    "wrap_declared": false,
+                    "filter_declared": true,
+                    "minimum": 0,
+                    "filter": "Nearest",
+                    "label": "Sun shadow"
+                }
+            ],
+            "label": "Body",
+            "folder": ""
+        }
+    ]
+}

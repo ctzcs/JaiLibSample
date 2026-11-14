@@ -18,4 +18,5 @@ capture_window :: (name: string) {
     path := tprint("library/screenshots/%-%x%.png", name, texture.Width, texture.Height);
     assert(FILE.write_entire_file(path, cast(string) png));
     print("screenshot: %\n", path);
+    print("[%] GPU PASS\n",name);
 }

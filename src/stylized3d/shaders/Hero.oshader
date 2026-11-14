@@ -1,0 +1,75 @@
+// 角色：被墙挡住的部分画成纯色剪影（ZTest Greater、不写深度），可见部分正常着色。
+// 游戏按 场景 → silhouette → body 的顺序分别提交：剪影要在遮挡物写完深度之后、本体写深度之前画，
+// 否则会叠到角色自己被挡住的部位上。
+Shader "Hero"
+{
+    Label "stylized3d / Hero"
+    Preview 3D
+    Output "color"
+    Instanced
+    Properties
+    {
+        // 身体、头、头发的颜色走 models 每项的 tint。
+        _color ("Color", Color) = (1,1,1,1)
+        _silhouette ("Silhouette", Color) = (0.48,0.84,1,1)
+        [Filter(Nearest)] _sunDepth ("Sun shadow", 2D) = ""
+    }
+
+    Pass "silhouette"
+    {
+        Label "Silhouette"
+        Draw Model
+        Cull Back
+        Blend Opaque
+        ZTest Greater
+        ZWrite Off
+        HLSLPROGRAM
+        #include "Stylized.hlsli"
+        struct Input { OlibInstanceInput Instance; float3 Position : TEXCOORD0; float3 Normal : TEXCOORD1; float2 Uv : TEXCOORD2; float4 Tangent : TEXCOORD3; };
+        struct Output { float4 Position : SV_Position; OlibInstance Instance; };
+        Output vertex_main(Input v) {
+            Output o;
+            float3 position = mul(float4(v.Position, 1), olib_world(v.Instance)).xyz;
+            o.Position = mul(float4(position, 1), Wvp);
+            o.Instance = olib_instance_from(v.Instance);
+            return o;
+        }
+        float4 fragment_main(Output v) : SV_Target0 {
+            olib_instance = v.Instance;
+            return _silhouette * float4(0.97 + InstanceTint.rgb * 0.03, InstanceTint.a);
+        }
+        ENDHLSL
+    }
+
+    Pass "body"
+    {
+        Label "Body"
+        Draw Model
+        Cull Back
+        Blend Opaque
+        ZTest Less
+        ZWrite On
+        HLSLPROGRAM
+        #define STYLIZED_SHADOWS
+        #include "Stylized.hlsli"
+        struct Input { OlibInstanceInput Instance; float3 Position : TEXCOORD0; float3 Normal : TEXCOORD1; float2 Uv : TEXCOORD2; float4 Tangent : TEXCOORD3; };
+        struct Output { float4 Position : SV_Position; float3 Normal : TEXCOORD0; float3 World : TEXCOORD1; OlibInstance Instance; };
+        Output vertex_main(Input v)
+        {
+            Output o;
+            float4x4 world = olib_world(v.Instance);
+            o.World = mul(float4(v.Position, 1), world).xyz;
+            o.Position = mul(float4(o.World, 1), Wvp);
+            float3 scale2 = float3(dot(world[0].xyz, world[0].xyz), dot(world[1].xyz, world[1].xyz), dot(world[2].xyz, world[2].xyz));
+            o.Normal = mul(v.Normal / max(scale2, 0.00001), (float3x3)world);
+            o.Instance = olib_instance_from(v.Instance);
+            return o;
+        }
+        float4 fragment_main(Output v) : SV_Target0
+        {
+            olib_instance = v.Instance;
+            return float4(stylized_shade(_color.rgb * InstanceTint.rgb, v.Normal, v.World), 1);
+        }
+        ENDHLSL
+    }
+}

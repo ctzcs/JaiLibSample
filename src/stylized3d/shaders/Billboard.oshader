@@ -1,0 +1,60 @@
+// 朝向相机的金币：instanced，世界矩阵只取平移和缩放，面片沿视图块里的相机轴展开，
+// 因此同一份记录提交给主相机和小地图时，各自朝向各自的相机。半透明、不写深度。
+Shader "Billboard"
+{
+    Label "stylized3d / Billboard"
+    Preview 3D
+    Output "color"
+    Instanced
+    Properties
+    {
+        _shine ("Shine", Range(0,2)) = 0.6
+    }
+
+    Pass "transparent"
+    {
+        Label "Card"
+        Draw Model
+        Cull None
+        Blend Alpha
+        ZTest Less
+        ZWrite Off
+        HLSLPROGRAM
+        #include "Stylized.hlsli"
+        // OlibInstanceInput 必须是第一个成员；只用 Position，其后的网格属性未用不影响属性编号。
+        struct Input {
+            OlibInstanceInput Instance;
+            float3 Position : TEXCOORD0;
+            float3 Normal : TEXCOORD1;
+            float2 Uv : TEXCOORD2;
+            float4 Tangent : TEXCOORD3;
+        };
+        struct Output { float4 Position : SV_Position; float2 Uv : TEXCOORD0; float Height : TEXCOORD1; OlibInstance Instance; };
+        Output vertex_main(Input v)
+        {
+            Output o;
+            olib_instance = olib_instance_from(v.Instance);
+            SceneView view = scene_view(VertexView);
+            float4x4 world = olib_world(v.Instance);
+            float size = length(world[0].xyz);
+            float3 position = world[3].xyz + (v.Position.x * view.camera_right.xyz + v.Position.y * view.camera_up.xyz) * size;
+            o.Position = mul(float4(position, 1), Wvp); // instanced：Wvp 即 ViewProjection
+            o.Uv = v.Position.xy * 2;
+            o.Height = position.y;
+            o.Instance = olib_instance;
+            return o;
+        }
+        float4 fragment_main(Output v) : SV_Target0
+        {
+            olib_instance = v.Instance;
+            if (FragmentView.water_view.y > 0.5) clip(v.Height-FragmentView.water_view.x);
+            float r = length(v.Uv);
+            float disc = 1 - smoothstep(0.86, 1.0, r);
+            float ring = smoothstep(0.60, 0.68, r) * (1 - smoothstep(0.74, 0.82, r)); // 内圈刻线
+            float shine = saturate(1 - length(v.Uv - float2(-0.35, 0.38)) * 2.4);    // 左上高光
+            float3 color = InstanceTint.rgb * (0.82 + 0.3 * (1 - r)) * (1 - ring * 0.3) + shine * _shine;
+            return float4(color, disc * InstanceTint.a);
+        }
+        ENDHLSL
+    }
+}

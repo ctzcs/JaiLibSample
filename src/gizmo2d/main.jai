@@ -2,7 +2,9 @@
 // 带撤销/重做、相机平移旋转缩放，以及 `shot` 下的脚本化输入自检。
 #import "Basic";
 M :: #import "Math";
+
 using M;
+
 FILE :: #import "File";
 FU :: #import "File_Utilities";
 F :: #import "foster";
@@ -12,6 +14,7 @@ R :: #import "kit/rendering/2d";
 MAT :: #import "kit/rendering/material";
 
 #load "editor.jai";
+#load "../../shared/library_assets.jai";
 
 has_arg :: (value: string) -> bool {
     for arg: get_command_line_arguments() if arg == value return true;
@@ -29,8 +32,11 @@ Demo :: struct {
     frame: int;
     shot, failed, ready: bool;
     pointer, scripted_end: F.Vector2;
+    scripted_pointer:F.Vector2;
+    scripted_down,scripted_pressed:bool;
     ui_scale: float32;
 }
+
 demo: Demo;
 
 main :: () {
@@ -38,12 +44,19 @@ main :: () {
     F.App.shutdown = shutdown;
     F.App.update = update;
     F.App.render = render;
-    width: s32 = 1280; height: s32 = 720;
-    if has_arg("scaled") { width = 1600; height = 900; }
-    if has_arg("narrow") { width = 960; height = 600; }
-    F.app_run(.{application_name = "Gizmo2D", width = width, height = height,
+    width: s32 = 1280;
+    height: s32 = 720;
+    if has_arg("scaled") {
+        width = 1600;
+        height = 900;
+    }
+    if has_arg("narrow") {
+        width = 960;
+        height = 600;
+    }
+    F.app_run(.{ application_name = "Gizmo2D", width = width, height = height,
         window_title = "JaiLib / 2D Gizmos | Drag handles | Arrows pan | Q/E rotate camera | R reset",
-        update_mode = F.update_mode_unlocked()});
+        update_mode = F.update_mode_unlocked() });
     F.app_destroy();
     if demo.failed exit(1);
 }
@@ -60,17 +73,11 @@ startup :: () {
         F.app_exit();
         return;
     }
-    paths : [3] string = .[ "C:/Windows/Fonts/segoeui.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/System/Library/Fonts/Supplemental/Arial.ttf" ];
-    for path: paths {
-        if !FU.file_exists(path) continue;
-        demo.font_source = F.font_load(path);
-        if demo.font_source == null continue;
+    demo.font_source = sample_load_bitmap_font();
+    if demo.font_source != null {
         codepoints: [95] s32;
         for i: 0..94 codepoints[i] = 32 + cast(s32) i;
-        demo.font = F.sprite_font_create_from_font(F.App.device, demo.font_source, 16,
-            array_view(codepoints, 0, 95));
-        break;
+        demo.font = F.sprite_font_create_from_font(F.App.device, demo.font_source, 16, array_view(codepoints, 0, 95));
     }
     if demo.font == null {
         print("Gizmo2D: no usable demo font\n");
@@ -98,7 +105,7 @@ shutdown :: () {
 
 update :: () {
     demo.frame += 1;
-    if !demo.ready return;
+    if !demo.ready || demo.shot return;
     keys := F.input_keyboard(F.App.input);
     if F.keyboard_pressed(keys, .ESCAPE) {
         if demo.editor.active cancel(*demo.editor);
@@ -124,7 +131,7 @@ update :: () {
     }
 }
 
-// 冒烟走真实 foster 鼠标输入，使用带偏移、旋转相机的三个独立视口。
+// Deterministic editor input, isolated from OS pointer/focus events during the probe.
 smoke :: () {
     f := demo.frame;
     if f == 10 || f == 40 || f == 70 || f == 100 {
@@ -150,6 +157,7 @@ smoke :: () {
     } else if f == 20 || f == 50 || f == 80 || f == 105 {
         pointer(demo.scripted_end, true);
     } else if f == 30 || f == 60 || f == 90 || f == 110 {
+        demo.scripted_down=false;
         F.input_mouse_button(F.App.input, cast(s32) F.Mouse_Buttons.LEFT, false, F.App.time.elapsed);
     } else if f == 114 {
         d := F.Vector2.{ demo.editor.values[0].position.x - 0.75, demo.editor.values[0].position.y + 0.5 };
@@ -181,6 +189,9 @@ check :: (condition: bool, reason: string) {
 }
 
 pointer :: (pixel: F.Vector2, down: bool) {
+    demo.scripted_pointer=pixel;
+    demo.scripted_pressed=down && !demo.scripted_down;
+    demo.scripted_down=down;
     size := F.window_size(F.App.window);
     target := F.drawable_target_window(F.App.window);
     pixels := F.Vector2.{ cast(float32) F.drawable_target_width_in_pixels(target),
@@ -212,13 +223,15 @@ render :: () {
         W.camera2d_set_viewport(*demo.editor.cameras[i], cast(s32) width, cast(s32) (h - 184));
     }
     // 脚本化输入在渲染帧内注入，保证同一帧就能被 editor_input 读到。
+    demo.scripted_pressed=false;
     if demo.shot smoke();
     size := F.window_size(F.App.window);
     mouse := F.input_mouse(F.App.input);
     demo.pointer = .{ mouse.Position.x * w / cast(float32) max(1, size.x),
         mouse.Position.y * h / cast(float32) max(1, size.y) };
+    if demo.shot demo.pointer=demo.scripted_pointer;
     editor_input(*demo.editor, demo.viewports,
-        .{ pointer = demo.pointer, pressed = F.mouse_pressed(mouse, .LEFT), down = F.mouse_down(mouse, .LEFT),
+        .{ pointer = demo.pointer, pressed = ifx demo.shot then demo.scripted_pressed else F.mouse_pressed(mouse, .LEFT), down = ifx demo.shot then demo.scripted_down else F.mouse_down(mouse, .LEFT),
            enabled = F.window_focused(F.App.window) || demo.shot, allow_start = true }, demo.ui_scale);
 
     R.reset(*demo.batch);
@@ -227,7 +240,7 @@ render :: () {
     text("2D GIZMOS / Camera2D", .{ 24, 22 });
     text("Drag handles | Arrows: pan | Q/E: camera rotation | Z/X: zoom | R: reset | Ctrl Z/Y: undo/redo | Esc: cancel",
         .{ 24, 48 });
-    names : [3] string = .[ "MOVE / WORLD X,Y", "ROTATE / Z", "SCALE / LOCAL X,Y" ];
+    names: [3] string = .["MOVE / WORLD X,Y", "ROTATE / Z", "SCALE / LOCAL X,Y"];
     for i: 0..2 {
         rect := demo.viewports[i];
         text(names[i], .{ rect.x + 8, 80 });
@@ -243,7 +256,7 @@ render :: () {
         }
         v := demo.editor.values[i];
         points: [4] F.Vector2;
-        local : [4] F.Vector2 = .[ .{ -1, -0.7 }, .{ 1, -0.7 }, .{ 1, 0.7 }, .{ -1, 0.7 } ];
+        local: [4] F.Vector2 = .[.{ -1, -0.7 }, .{ 1, -0.7 }, .{ 1, 0.7 }, .{ -1, 0.7 }];
         for l, n: local {
             px := l.x * v.scale.x;
             py := l.y * v.scale.y;
@@ -259,7 +272,7 @@ render :: () {
         }
         geometry := GZ.transform2d_geometry(*demo.editor.cameras[i], v, rect, cast(GZ.Mode) i, demo.ui_scale);
         labels := GZ.transform2d_draw(*demo.batch, *demo.editor.handles[i], geometry, demo.pointer, demo.ui_scale);
-        axis_names : [3] string = .[ "X", "Y", "Z" ];
+        axis_names: [3] string = .["X", "Y", "Z"];
         for label, axis: labels if label.visible text(axis_names[axis], label.position);
         R.pop_scissor(*demo.batch);
         text(tprint("pos % | % | angle %", v.position.x, v.position.y, v.rotation * 180 / PI),
